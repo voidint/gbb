@@ -24,7 +24,7 @@ var RootCmd = &cobra.Command{
 
 	Run: func(cmd *cobra.Command, args []string) {
 		if !util.FileExist("./gbb.json") {
-			collect()
+			genConfigFile(confFile)
 			return
 		}
 		if err := build(); err != nil {
@@ -45,7 +45,7 @@ func Execute() {
 
 func init() {
 	cobra.OnInitialize(initConfig)
-	RootCmd.PersistentFlags().BoolVar(&debug, "debug", false, "print detail")
+	RootCmd.PersistentFlags().BoolVar(&debug, "debug", false, "Print details")
 }
 
 // initConfig reads in config file and ENV variables if set.
