@@ -24,6 +24,7 @@ func init() {
 
 func genConfigFile(destFilename string) {
 	c := gather()
+
 	b, _ := json.MarshalIndent(c, "", "    ")
 	fmt.Printf("About to write to %s:\n\n%s\n\nIs this ok?[y/n] ", destFilename, string(b))
 	var ok string
@@ -40,7 +41,7 @@ It only covers the most common items, and tries to guess sensible defaults.`)
 
 	c := config.Config{
 		Version: gatherOne("version", "0.0.1"),
-		Tool:    gatherOne("tool", "go install"),
+		Tool:    gatherOne("tool", "go_install"),
 		Package: gatherOne("package", "main"),
 	}
 	for {
@@ -70,13 +71,13 @@ func gatherOne(prompt, defaultVal string) (input string) {
 		} else {
 			fmt.Printf("%s: ", prompt)
 		}
-		fmt.Scanln(&input)
+		fmt.Scanln(&input) // TODO bug: 无法获取到包含空格的全部输入，如go build
 		if input = strings.TrimSpace(input); input == "" {
 			if defaultVal == "" {
 				continue
 			}
-			return defaultVal
+			return strings.Replace(defaultVal, "_", " ", -1)
 		}
-		return input
+		return strings.Replace(input, "_", " ", -1) // TODO 临时举措，还原实际的空格。如，go_build ==> go build
 	}
 }
