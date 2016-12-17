@@ -27,7 +27,7 @@ var RootCmd = &cobra.Command{
 			genConfigFile(confFile)
 			return
 		}
-		if err := build(); err != nil {
+		if err := callBuilder(); err != nil {
 			fmt.Fprintf(os.Stderr, err.Error())
 			os.Exit(-1)
 		}
@@ -63,7 +63,7 @@ func initConfig() {
 	confFile = wd + "gbb.json"
 }
 
-func build() (err error) {
+func callBuilder() (err error) {
 	conf, err := config.Load(confFile)
 	if err != nil {
 		return err
