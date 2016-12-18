@@ -1,8 +1,23 @@
 # gbb
+昨天跑得好好的程序突然出了问题，查看它的版本号，机器冷冰冰地告诉你👇
 
+``` shell
+$ xxx --version
+xxx version 1.0.12
+```
+如果没有详细的发布记录信息，我想此时的你一定是崩溃的。因为实在不知道这个`1.0.12`到底是什么时候编译的，更加不知道是从哪份源代码编译而来，想要找出其中的bug，难度大了不少。
 
+那么，同样的场景下，机器告诉你的信息是这样，那debug是否容易多了呢？！
+
+``` shell
+$ xxx --version
+xxx version 1.0.12
+date: 2016-12-18T15:37:09+08:00
+commit: db8b606cfc2b24a24e2e09acac24a52c47b68401
+```
+
+如果以上的场景你也似曾相识，那么也许`gbb`就能帮到你，耐心往下👀吧。
 ## 安装
-### 源代码安装
 1. 拉取源代码
 
 	``` shell
@@ -32,7 +47,7 @@ $ ls -l ./gbb
 
 如果是一个全新的项目，该怎么使用`gbb`来代替`go build/install`或者`gb`来完成日常的代码编译工作呢？很简单，跟着下面的步骤尝试一下，立马就能学会了。
 
-#### 准备
+### 准备
 既然需要演示使用方法，必然就需要有个go项目。我这里就以`gbb`项目为例来展开。
 
 为了从零开始我们的演示，请先把源代码目录下的`gbb.json`文件删除。`gbb.json`的作用以及文件内容的含义暂且不表，下文自然会提到。
@@ -55,6 +70,7 @@ commit: db8b606cfc2b24a24e2e09acac24a52c47b68401
 
 这个版本信息，除了常规的`v0.0.1`，还有这个`gbb`二进制文件编译生成的时间，以及项目所使用的源代码管理工具`git`的最近一次`commit`号。这样的版本信息是否比简单的一个`v0.0.1`要更加友好呢？丰富的版本信息也为`debug`降低了难度，因为这个二进制能和仓库中的源代码唯一对应了。
 
+### step0
 为了在版本信息中显示`编译时间`和`commit号`这两个关键信息，需要先定义两个变量（变量不需要赋初值）。
 
 ```
@@ -102,7 +118,7 @@ func init() {
 }
 ```
 
-#### step1
+### step1
 在项目目录*合适的地方*执行`gbb init`生成`gbb.json`文件。
 
 合适的地方指哪些地方？一般规律是这样：
@@ -148,9 +164,9 @@ About to write to /Users/voidint/cloud/workspace/go/projects/src/github.com/void
 Is this ok?[y/n] y
 ```
 
-关于`gbb.json`，请参见下文的详细说明。
+关于`gbb.json`，请参见下文的[详细说明](https://github.com/voidint/gbb#gbbjson)。
 
-#### step2
+### step2
 在`gbb.json`文件所在目录编译（若目录下没有`gbb.json`文件，`gbb init`会被自动调用）。
 
 ```
@@ -189,7 +205,7 @@ commit: db8b606cfc2b24a24e2e09acac24a52c47b68401
 ```
 
 - `version`: 版本号。预留字段。
-- `tool`: gbb实际调用的编译工具。已知的可选值包括：`go_build`、`go_install`、`gb_build`。注意：这个值不能包含空格（bug），因此暂时通过下划线`_`连接。
+- `tool`: gbb实际调用的编译工具。已知的可选值包括：`go_build`、`go_install`、`gb_build`。注意：这个值不能包含空格[issue](https://github.com/voidint/gbb/issues/1)，因此暂时通过下划线`_`连接。
 - `pakcage`: 包名，也就是定义`Date`、`Commit`这类变量的包全路径，如`github.com/voidint/gbb/build`。
 - `variables`: 变量列表。列表中的每个元素都包含`variable`和`value`两个属性。
 	- `variable`属性表示变量名，比如`Date`。
