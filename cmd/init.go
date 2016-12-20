@@ -40,7 +40,7 @@ It only covers the most common items, and tries to guess sensible defaults.`)
 	fmt.Printf("\nPress ^C at any time to quit.\n")
 
 	c := config.Config{
-		Version: gatherOne("version", "0.0.1"),
+		Version: Version,
 		Tool:    gatherOne("tool", "go_install"),
 		Package: gatherOne("package", "main"),
 	}
