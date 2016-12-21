@@ -134,7 +134,6 @@ This utility will walk you through creating a gbb.json file.
 It only covers the most common items, and tries to guess sensible defaults.
 
 Press ^C at any time to quit.
-version: (0.0.1)
 tool: (go_install) go_build
 package: (main) github.com/voidint/gbb/build
 variable: Date
