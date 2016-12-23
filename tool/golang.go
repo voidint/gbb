@@ -49,7 +49,8 @@ func walkMainDir(rootDir string) (paths []string, err error) {
 		}
 
 		if info.IsDir() {
-			if runtime.GOOS != "windows" && strings.HasPrefix(path, ".") {
+			if info.Name() == "vendor" ||
+				(runtime.GOOS != "windows" && strings.HasPrefix(info.Name(), ".")) {
 				return filepath.SkipDir
 			}
 			return nil
