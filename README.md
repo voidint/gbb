@@ -1,4 +1,41 @@
 # gbb
+### 场景一
+如果项目中包含了多个main入口文件，比如👇
+
+```shell
+$ tree ./github.com/voidint/test
+./github.com/voidint/test
+├── cmd
+│   ├── apiserver
+│   │   └── main.go
+│   ├── dbtool
+│   │   └── main.go
+│   └── init
+│       └── main.go
+└── gbb.json
+
+4 directories, 4 files
+```
+对于这样子目录结构，该怎么去编译这些个程序？假如使用的是原生的`go build/install`工具，那么可能会尝试这样去编译：
+
+- 输入完整的路径编译
+
+	``` shell
+	$ go install github.com/voidint/test/cmd/apiserver
+	$ go install github.com/voidint/test/cmd/dbtool
+	$ go install github.com/voidint/test/cmd/init
+	```
+	
+- 逐个切换工作目录后执行`go build/install`
+
+	``` shell
+	$ cd github.com/voidint/test/cmd/apiserver && go install && cd -
+	$ cd github.com/voidint/test/cmd/dbtool && go install && cd -
+	$ cd github.com/voidint/test/cmd/init && go install && cd -
+	```
+操作完之后是否会觉得很繁琐？如果一天需要编译这个项目几十次，那会相当低效。可惜，目前`go build/install`好像并不支持在项目根目录下编译子孙目录中所有的main入口文件。
+
+### 场景二
 昨天跑得好好的程序突然出了问题，查看它的版本号，机器冷冰冰地告诉你👇
 
 ``` shell
@@ -15,6 +52,7 @@ xxx version 1.0.12
 date: 2016-12-18T15:37:09+08:00
 commit: db8b606cfc2b24a24e2e09acac24a52c47b68401
 ```
+
 
 如果以上的场景你也似曾相识，那么也许`gbb`就能帮到你，耐心往下👀吧。
 ## 安装
