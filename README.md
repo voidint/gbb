@@ -63,12 +63,12 @@ $ rm -f gbb.json
 
 ``` shell
 $ gbb version
-gbb version v0.0.1
+gbb version 0.1.0
 date: 2016-12-17T15:37:09+08:00
 commit: db8b606cfc2b24a24e2e09acac24a52c47b68401
 ```
 
-这个版本信息，除了常规的`v0.0.1`，还有这个`gbb`二进制文件编译生成的时间，以及项目所使用的源代码管理工具`git`的最近一次`commit`号。这样的版本信息是否比简单的一个`v0.0.1`要更加友好呢？丰富的版本信息也为`debug`降低了难度，因为这个二进制能和仓库中的源代码唯一对应了。
+这个版本信息，除了常规的`0.1.0`，还有这个`gbb`二进制文件编译生成的时间，以及项目所使用的源代码管理工具`git`的最近一次`commit`号。这样的版本信息是否比简单的一个`0.1.0`要更加友好呢？丰富的版本信息也为`debug`降低了难度，因为这个二进制能和仓库中的源代码唯一对应了。
 
 ### step0
 为了在版本信息中显示`编译时间`和`commit号`这两个关键信息，需要先定义两个变量（变量不需要赋初值）。
@@ -95,7 +95,7 @@ import (
 
 var (
 	// Version 版本号
-	Version = "v0.0.1"
+	Version = "0.1.0"
 )
 
 var versionCmd = &cobra.Command{
@@ -119,14 +119,7 @@ func init() {
 ```
 
 ### step1
-在项目目录*合适的地方*执行`gbb init`生成`gbb.json`文件。
-
-合适的地方指哪些地方？一般规律是这样：
-
-- 若使用的是`go build/install`工具编译代码(`gbb init`执行过程中填写的`tool`项对应的值)，那么这个**合适的地方**就是`main`方法所在目录。
-- 若使用`gb`工具编译代码，那么这个**合适的地方**就是项目根目录。
-
-按照`gbb init`的提示，逐步填写完信息并最终生成`gbb.json`文件。
+在项目根目录执行`gbb init`，按照`gbb init`的提示，逐步填写完信息并最终生成`gbb.json`文件。
 
 ``` shell
 $ gbb init
@@ -134,7 +127,6 @@ This utility will walk you through creating a gbb.json file.
 It only covers the most common items, and tries to guess sensible defaults.
 
 Press ^C at any time to quit.
-version: (0.0.1)
 tool: (go_install) go_build
 package: (main) github.com/voidint/gbb/build
 variable: Date
@@ -146,7 +138,7 @@ Do you want to continue?[y/n] n
 About to write to /Users/voidint/cloud/workspace/go/projects/src/github.com/voidint/gbb/gbb.json:
 
 {
-    "version": "0.0.1",
+    "version": "0.1.0",
     "tool": "go install",
     "package": "github.com/voidint/gbb/build",
     "variables": [
@@ -177,7 +169,7 @@ $ gbb --debug
 
 ```
 $ ./gbb version
-gbb version v0.0.1
+gbb version 0.1.0
 date: 2016-12-17T22:18:32+08:00
 commit: db8b606cfc2b24a24e2e09acac24a52c47b68401
 ```
@@ -188,7 +180,7 @@ commit: db8b606cfc2b24a24e2e09acac24a52c47b68401
 
 ``` json
 {
-    "version": "0.0.1",
+    "version": "0.1.0",
     "tool": "gb_build",
     "package": "build",
     "variables": [
