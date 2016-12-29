@@ -6,10 +6,10 @@ import (
 )
 
 type Config struct {
-	Version   string     `json:"version"`   // 版本号
-	Tool      string     `json:"tool"`      // 编译工具：go、gb...
-	Package   string     `json:"package"`   // 待替换的变量所在包名
-	Variables []Variable `json:"variables"` // 待替换变量集合
+	Version   string     `json:"version"`             // 版本号
+	Tool      string     `json:"tool"`                // 编译工具：go、gb...
+	Package   string     `json:"package,omitempty"`   // 待替换的变量所在包名
+	Variables []Variable `json:"variables,omitempty"` // 待替换变量集合
 }
 
 type Variable struct {

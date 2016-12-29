@@ -1,15 +1,4 @@
 {
-    "version": "0.0.1",
-    "tool": "go build",
-    "package": "github.com/voidint/gbb/build",
-    "variables": [
-        {
-            "variable": "Date",
-            "value": "{{.date}}"
-        },
-        {
-            "variable": "Commit",
-            "value": "{{.gitCommit}}"
-        }
-    ]
+    "version": "0.2.0",
+    "tool": "go install"
 }
