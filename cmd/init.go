@@ -34,27 +34,35 @@ func genConfigFile(destFilename string) {
 	}
 }
 
-func gather() *config.Config {
+func gather() (c *config.Config) {
 	fmt.Println(`This utility will walk you through creating a gbb.json file.
 It only covers the most common items, and tries to guess sensible defaults.`)
 	fmt.Printf("\nPress ^C at any time to quit.\n")
 
-	c := config.Config{
-		Version: Version,
-		Tool:    gatherOne("tool", "go_install"),
-		Package: gatherOne("package", "main"),
+	c = new(config.Config)
+	// required
+	c.Version = Version
+	c.Tool = gatherOne("tool", "go_install")
+
+	var sContinue string
+	fmt.Print("Do you want to continue?[y/n] ")
+	fmt.Scanln(&sContinue)
+	if sContinue = strings.ToLower(sContinue); sContinue == "n" {
+		return c
 	}
+
+	// optional
+	c.Package = gatherOne("package", "main")
 	for {
 		c.Variables = append(c.Variables, *gatherOneVar())
 
-		var sContinue string
 		fmt.Print("Do you want to continue?[y/n] ")
 		fmt.Scanln(&sContinue)
 		if sContinue = strings.ToLower(sContinue); sContinue == "n" {
 			break
 		}
 	}
-	return &c
+	return c
 }
 
 func gatherOneVar() (v *config.Variable) {
