@@ -31,6 +31,7 @@ var RootCmd = &cobra.Command{
 		}
 
 		if conf.Version != Version {
+			fmt.Printf("The gbb.json file needs to be upgraded.\n\n")
 			genConfigFile(confFile)
 			return
 		}

@@ -17,13 +17,7 @@ var versionCmd = &cobra.Command{
 	Short: "Print version information",
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Printf("gbb version %s\n", Version)
-		if build.Date != "" {
-			fmt.Printf("date: %s\n", build.Date)
-		}
-		if build.Commit != "" {
-			fmt.Printf("commit: %s\n", build.Commit)
-		}
+		fmt.Println(build.Version(fmt.Sprintf("gbb version %s", Version)))
 	},
 }
 
