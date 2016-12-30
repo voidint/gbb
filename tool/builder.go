@@ -64,18 +64,21 @@ func buildDir(conf *config.Config, debug bool, dir string) (err error) {
 			buf.WriteByte(' ')
 		}
 	}
-	cmdArgs = append(cmdArgs, "-ldflags", buf.String())
+	if buf.Len() > 0 {
+		cmdArgs = append(cmdArgs, "-ldflags", buf.String())
+	}
 
 	if debug {
 		fmt.Print("==> ", cmdArgs[0])
 		args := cmdArgs[1:]
 		for i := range args {
-			if i < len(args)-1 {
-				fmt.Print(" ", args[i])
+			if i-1 > 0 && args[i-1] == "-ldflags" {
+				fmt.Printf(" '%s'", args[i])
 			} else {
-				fmt.Println(" ", "'"+args[i]+"'")
+				fmt.Printf(" %s", args[i])
 			}
 		}
+		fmt.Println()
 	}
 
 	cmd := exec.Command(cmdArgs[0], cmdArgs[1:]...)
