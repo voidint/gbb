@@ -11,6 +11,7 @@
 	- [step1](#step1)
 	- [step2](#step2)
 - [gbb.json](#gbbjson)
+- [changelog](#changelog)
 	
 ## 应用场景
 ### 场景一
