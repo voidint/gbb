@@ -9,6 +9,12 @@
 			"revisionTime": "2014-10-17T20:07:13Z"
 		},
 		{
+			"checksumSHA1": "ynJSWoF6v+3zMnh9R0QmmG6iGV8=",
+			"path": "github.com/pkg/errors",
+			"revision": "248dadf4e9068a0b3e79f02ed0a610d935de5302",
+			"revisionTime": "2016-10-29T09:36:37Z"
+		},
+		{
 			"checksumSHA1": "RQVbXPF9PMC9sTu8lr+uv8JtPPk=",
 			"path": "github.com/spf13/cobra",
 			"revision": "b62566898a99f2db9c68ed0026aa0a052e59678d",
