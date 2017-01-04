@@ -66,9 +66,5 @@ func (v *GitCommitVar) headCommit(debug bool) (commit string, err error) {
 	if err != nil {
 		return "", err
 	}
-	commit = strings.TrimSpace(string(output))
-	if debug {
-		fmt.Println(commit)
-	}
-	return commit, nil
+	return strings.TrimSpace(string(output)), nil
 }

@@ -55,9 +55,15 @@ func buildDir(conf *config.Config, debug bool, dir string) (err error) {
 		varName := conf.Variables[i].Variable
 		varExpr := conf.Variables[i].Value
 
+		if debug {
+			fmt.Printf("==> eval(%q)\n", varExpr)
+		}
 		val, err := variable.Eval(varExpr, debug)
 		if err != nil {
 			return err
+		}
+		if debug {
+			fmt.Println(val)
 		}
 		buf.WriteString(fmt.Sprintf(`-X "%s.%s=%s"`, conf.Package, varName, val))
 		if i < len(conf.Variables)-1 {

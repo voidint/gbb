@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/spf13/cobra"
 	"github.com/voidint/gbb/config"
@@ -65,5 +66,5 @@ func initConfig() {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(-1)
 	}
-	confFile = fmt.Sprintf("%s%cgbb.json", wd, os.PathSeparator)
+	confFile = filepath.Join(wd, "gbb.json")
 }
