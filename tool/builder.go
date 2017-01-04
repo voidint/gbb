@@ -55,7 +55,7 @@ func buildDir(conf *config.Config, debug bool, dir string) (err error) {
 		varName := conf.Variables[i].Variable
 		varExpr := conf.Variables[i].Value
 
-		val, err := variable.Eval(varExpr)
+		val, err := variable.Eval(varExpr, debug)
 		if err != nil {
 			return err
 		}

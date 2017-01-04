@@ -17,7 +17,7 @@ var (
 // Variabler 变量接口
 type Variabler interface {
 	// Eval 根据表达式(shell命令、golang模板表达式...)求值
-	Eval(expr string) (val string, err error)
+	Eval(expr string, debug bool) (val string, err error)
 	// Match 按照表达式检查是否匹配该种类型变量
 	Match(expr string) (matched bool)
 }
@@ -30,10 +30,10 @@ var builtinVars = []Variabler{
 
 // Eval 逐一用当前内建的变量对表达式求值。
 // 若内建变量无一匹配表达式，则返回ErrExpr。
-func Eval(expr string) (val string, err error) {
+func Eval(expr string, debug bool) (val string, err error) {
 	for i := range builtinVars {
 		if builtinVars[i].Match(expr) {
-			return builtinVars[i].Eval(expr)
+			return builtinVars[i].Eval(expr, debug)
 		}
 	}
 	return "", ErrExpr

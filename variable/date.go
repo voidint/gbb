@@ -29,7 +29,7 @@ func NewDateVar(layout, expr string) *DateVar {
 }
 
 // Eval 表达式变量求值
-func (v *DateVar) Eval(expr string) (val string, err error) {
+func (v *DateVar) Eval(_ string, _ bool) (val string, err error) {
 	return time.Now().Format(v.layout), nil
 }
 
