@@ -9,7 +9,7 @@ import (
 
 var (
 	// Version 版本号
-	Version = "0.2.0"
+	Version = "0.3.0"
 )
 
 var versionCmd = &cobra.Command{

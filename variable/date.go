@@ -6,7 +6,7 @@ import (
 
 const (
 	// DefaultDateExpr 默认日期变量表达式
-	DefaultDateExpr = "{{.date}}"
+	DefaultDateExpr = "{{.Date}}"
 )
 
 var (

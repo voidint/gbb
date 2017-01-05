@@ -1,15 +1,15 @@
 {
-    "version": "0.2.0",
+    "version": "0.3.0",
     "tool": "go build",
     "package": "github.com/voidint/gbb/build",
     "variables": [
         {
             "variable": "Date",
-            "value": "{{.date}}"
+            "value": "{{.Date}}"
         },
         {
             "variable": "Commit",
-            "value": "{{.gitCommit}}"
+            "value": "{{.GitCommit}}"
         }
     ]
 }

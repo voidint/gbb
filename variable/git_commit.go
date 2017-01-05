@@ -10,7 +10,7 @@ const (
 	// GitCmd 获取最近一次git commit id函数
 	GitCmd = `git rev-parse HEAD` //git log --pretty=format:"%H" -1
 	// DefaultGitCommitExpr 默认git commit变量表达式
-	DefaultGitCommitExpr = "{{.gitCommit}}"
+	DefaultGitCommitExpr = "{{.GitCommit}}"
 )
 
 var (
