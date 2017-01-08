@@ -26,6 +26,7 @@ type Variabler interface {
 var builtinVars = []Variabler{
 	DefaultDateVar,
 	DefaultGitCommitVar,
+	NewCmdVar(),
 }
 
 // Eval 逐一用当前内建的变量对表达式求值。

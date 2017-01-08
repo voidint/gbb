@@ -52,8 +52,8 @@ func buildDir(conf *config.Config, debug bool, dir string) (err error) {
 
 	var buf bytes.Buffer
 	for i := range conf.Variables {
-		varName := conf.Variables[i].Variable
-		varExpr := conf.Variables[i].Value
+		varName := strings.TrimSpace(conf.Variables[i].Variable)
+		varExpr := strings.TrimSpace(conf.Variables[i].Value)
 
 		if debug {
 			fmt.Printf("==> eval(%q)\n", varExpr)
