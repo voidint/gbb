@@ -3,16 +3,112 @@
 	"ignore": "test",
 	"package": [
 		{
+			"checksumSHA1": "/KmXVnTFo/RhHmw3l1mIK00YNtM=",
+			"path": "github.com/bouk/monkey",
+			"revision": "697673d58359af7ebdcad66f99b81d011359d8ef",
+			"revisionTime": "2016-08-08T17:21:46Z"
+		},
+		{
+			"checksumSHA1": "P3zGmsNjW8m15a+nks4FdVpFKwE=",
+			"path": "github.com/gopherjs/gopherjs/js",
+			"revision": "dcd7ed070932688cbd543449d96aaae225ffd90c",
+			"revisionTime": "2017-01-07T17:36:28Z"
+		},
+		{
 			"checksumSHA1": "40vJyUB4ezQSn/NSadsKEOrudMc=",
 			"path": "github.com/inconshreveable/mousetrap",
 			"revision": "76626ae9c91c4f2a10f34cad8ce83ea42c93bb75",
 			"revisionTime": "2014-10-17T20:07:13Z"
 		},
 		{
+			"checksumSHA1": "L6/CjN/3IdKLxfaBGRPTJ7e62bg=",
+			"path": "github.com/jtolds/gls",
+			"revision": "bb0351aa7eb6f322f32667d51375f26a2bca6628",
+			"revisionTime": "2016-12-28T00:43:38Z"
+		},
+		{
 			"checksumSHA1": "ynJSWoF6v+3zMnh9R0QmmG6iGV8=",
 			"path": "github.com/pkg/errors",
 			"revision": "248dadf4e9068a0b3e79f02ed0a610d935de5302",
 			"revisionTime": "2016-10-29T09:36:37Z"
+		},
+		{
+			"checksumSHA1": "RPVh5/wbvFG0q0CWHXifXpkYTDg=",
+			"path": "github.com/smartystreets/assertions",
+			"revision": "26acb9229f421449ac63d014995b282d59261a8b",
+			"revisionTime": "2016-12-13T22:48:10Z"
+		},
+		{
+			"checksumSHA1": "Vzb+dEH/LTYbvr8RXHmt6xJHz04=",
+			"path": "github.com/smartystreets/assertions/internal/go-render/render",
+			"revision": "26acb9229f421449ac63d014995b282d59261a8b",
+			"revisionTime": "2016-12-13T22:48:10Z"
+		},
+		{
+			"checksumSHA1": "dSZQzhiGN0tEILHxUZcrFFNW2Xw=",
+			"path": "github.com/smartystreets/assertions/internal/oglematchers",
+			"revision": "26acb9229f421449ac63d014995b282d59261a8b",
+			"revisionTime": "2016-12-13T22:48:10Z"
+		},
+		{
+			"checksumSHA1": "egeG/afVkrtqk62j86WS7ATVAbI=",
+			"path": "github.com/smartystreets/goconvey",
+			"revision": "3bd662eac601ad6436e64776af2e112069eb2edc",
+			"revisionTime": "2017-01-10T12:00:22Z"
+		},
+		{
+			"checksumSHA1": "9LakndErFi5uCXtY1KWl0iRnT4c=",
+			"path": "github.com/smartystreets/goconvey/convey/gotest",
+			"revision": "3bd662eac601ad6436e64776af2e112069eb2edc",
+			"revisionTime": "2017-01-10T12:00:22Z"
+		},
+		{
+			"checksumSHA1": "FWDhk37bhAwZ2363D/L2xePwR64=",
+			"path": "github.com/smartystreets/goconvey/convey/reporting",
+			"revision": "3bd662eac601ad6436e64776af2e112069eb2edc",
+			"revisionTime": "2017-01-10T12:00:22Z"
+		},
+		{
+			"checksumSHA1": "DjCJPoeFDfYI7LsteLMhxwDEnoE=",
+			"path": "github.com/smartystreets/goconvey/web/server/api",
+			"revision": "3bd662eac601ad6436e64776af2e112069eb2edc",
+			"revisionTime": "2017-01-10T12:00:22Z"
+		},
+		{
+			"checksumSHA1": "+exNPDGt4XU8k4jj8h525PZtLxI=",
+			"path": "github.com/smartystreets/goconvey/web/server/contract",
+			"revision": "3bd662eac601ad6436e64776af2e112069eb2edc",
+			"revisionTime": "2017-01-10T12:00:22Z"
+		},
+		{
+			"checksumSHA1": "pWkPFCaZP+x5SZVw/QG/FKl94SA=",
+			"path": "github.com/smartystreets/goconvey/web/server/executor",
+			"revision": "3bd662eac601ad6436e64776af2e112069eb2edc",
+			"revisionTime": "2017-01-10T12:00:22Z"
+		},
+		{
+			"checksumSHA1": "yaYihYltKDF/h2vuiUx8KbnsWMU=",
+			"path": "github.com/smartystreets/goconvey/web/server/messaging",
+			"revision": "3bd662eac601ad6436e64776af2e112069eb2edc",
+			"revisionTime": "2017-01-10T12:00:22Z"
+		},
+		{
+			"checksumSHA1": "GySn94WCbnOeJLE531s0B9f11XU=",
+			"path": "github.com/smartystreets/goconvey/web/server/parser",
+			"revision": "3bd662eac601ad6436e64776af2e112069eb2edc",
+			"revisionTime": "2017-01-10T12:00:22Z"
+		},
+		{
+			"checksumSHA1": "1Wdt5ON6SdGGAe13uB3sn3q0Jlw=",
+			"path": "github.com/smartystreets/goconvey/web/server/system",
+			"revision": "3bd662eac601ad6436e64776af2e112069eb2edc",
+			"revisionTime": "2017-01-10T12:00:22Z"
+		},
+		{
+			"checksumSHA1": "G5OpQDnImoD6l0eQaH4UATfTtRE=",
+			"path": "github.com/smartystreets/goconvey/web/server/watch",
+			"revision": "3bd662eac601ad6436e64776af2e112069eb2edc",
+			"revisionTime": "2017-01-10T12:00:22Z"
 		},
 		{
 			"checksumSHA1": "RQVbXPF9PMC9sTu8lr+uv8JtPPk=",
