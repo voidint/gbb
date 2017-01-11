@@ -1,0 +1,9 @@
+language: go
+
+go:
+    - master
+
+script:
+    - go build
+    - go test -v ./{build,cmd,config,tool,util,variable}
+    
