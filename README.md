@@ -1,4 +1,7 @@
 # gbb
+[![Build Status](https://travis-ci.org/voidint/gbb.png)](https://travis-ci.org/voidint/gbb)
+[![Coverage Status](https://coveralls.io/repos/github/voidint/gbb/badge.svg)](https://coveralls.io/github/voidint/gbb)
+
 ## 目录
 - [应用场景](#应用场景)
 	- [场景一](#场景一)
