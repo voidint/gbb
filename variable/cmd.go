@@ -17,7 +17,7 @@ func NewCmdVar() *CmdVar {
 
 // Eval 表达式变量求值
 func (v *CmdVar) Eval(expr string, debug bool) (val string, err error) {
-	nameAndArgs := strings.TrimSpace(strings.TrimRight(strings.TrimLeft(expr, "$("), ")"))
+	nameAndArgs := strings.TrimRight(strings.TrimLeft(strings.TrimSpace(expr), "$("), ")")
 	if nameAndArgs == "" {
 		return "", nil
 	}
