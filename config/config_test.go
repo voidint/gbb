@@ -1,6 +1,7 @@
 package config
 
 import (
+	"encoding/json"
 	"errors"
 	"testing"
 
@@ -100,6 +101,16 @@ func TestSave(t *testing.T) {
 		})
 		Convey("配置对象为nil", func() {
 			So(Save(nil, filename), ShouldBeNil)
+		})
+
+		Convey("JSON序列化报错", func() {
+			var ErrMarshal = errors.New("marshal error")
+			monkey.Patch(json.MarshalIndent, func(v interface{}, prefix, indent string) ([]byte, error) {
+				return nil, ErrMarshal
+			})
+			defer monkey.Unpatch(json.MarshalIndent)
+
+			So(Save(new(Config), "gbb.json"), ShouldEqual, ErrMarshal)
 		})
 	})
 }
