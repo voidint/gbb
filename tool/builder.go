@@ -24,23 +24,23 @@ var (
 
 // Build 根据配置信息，调用合适的编译工具进行编译。
 // 若配置的编译工具不在支持的工具范围内，则返回ErrBuildTool错误。
-func Build(conf *config.Config, debug bool, dir string) error {
+func Build(conf *config.Config, dir string) error {
 	if strings.HasPrefix(conf.Tool, "go ") {
-		return NewGoBuilder(conf, debug).Build(dir)
+		return NewGoBuilder(conf).Build(dir)
 	} else if strings.HasPrefix(conf.Tool, "gb ") {
-		return NewGBBuilder(conf, debug).Build(dir)
+		return NewGBBuilder(conf).Build(dir)
 	}
 	return ErrBuildTool
 }
 
 // buildDir 切换到指定工作目录，调用指定的编译工具进行编译。
-func buildDir(conf *config.Config, debug bool, dir string) (err error) {
+func buildDir(conf *config.Config, dir string) (err error) {
 	wd, err := os.Getwd()
 	if err != nil {
 		return err
 	}
 	if wd != dir {
-		if debug {
+		if conf.Debug {
 			fmt.Printf("==> cd %s\n", dir)
 		}
 		if err = os.Chdir(dir); err != nil {
@@ -55,14 +55,14 @@ func buildDir(conf *config.Config, debug bool, dir string) (err error) {
 		varName := strings.TrimSpace(conf.Variables[i].Variable)
 		varExpr := strings.TrimSpace(conf.Variables[i].Value)
 
-		if debug {
+		if conf.Debug {
 			fmt.Printf("==> eval(%q)\n", varExpr)
 		}
-		val, err := variable.Eval(varExpr, debug)
+		val, err := variable.Eval(varExpr, conf.Debug)
 		if err != nil {
 			return err
 		}
-		if debug {
+		if conf.Debug {
 			fmt.Println(val)
 		}
 		buf.WriteString(fmt.Sprintf(`-X "%s.%s=%s"`, conf.Package, varName, val))
@@ -74,7 +74,7 @@ func buildDir(conf *config.Config, debug bool, dir string) (err error) {
 		cmdArgs = append(cmdArgs, "-ldflags", buf.String())
 	}
 
-	if debug {
+	if conf.Debug {
 		fmt.Print("==> ", cmdArgs[0])
 		args := cmdArgs[1:]
 		for i := range args {

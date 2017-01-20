@@ -30,6 +30,7 @@ var RootCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, err.Error())
 			os.Exit(-1)
 		}
+		conf.Debug = debug
 
 		if conf.Version != Version {
 			fmt.Printf("The gbb.json file needs to be upgraded.\n\n")
@@ -37,7 +38,7 @@ var RootCmd = &cobra.Command{
 			return
 		}
 
-		if err := tool.Build(conf, debug, wd); err != nil {
+		if err := tool.Build(conf, wd); err != nil {
 			fmt.Fprintf(os.Stderr, err.Error())
 			os.Exit(-1)
 		}

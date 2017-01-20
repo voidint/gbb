@@ -14,15 +14,13 @@ import (
 
 // GoBuilder go内置编译工具
 type GoBuilder struct {
-	conf  *config.Config
-	debug bool
+	conf *config.Config
 }
 
 // NewGoBuilder 返回go内置编译工具实例
-func NewGoBuilder(conf *config.Config, debug bool) *GoBuilder {
+func NewGoBuilder(conf *config.Config) *GoBuilder {
 	return &GoBuilder{
-		conf:  conf,
-		debug: debug,
+		conf: conf,
 	}
 }
 
@@ -34,7 +32,7 @@ func (b *GoBuilder) Build(rootDir string) error {
 	}
 	for i := range paths {
 		dir := filepath.Dir(paths[i])
-		if err = buildDir(b.conf, b.debug, dir); err != nil {
+		if err = buildDir(b.conf, dir); err != nil {
 			return err
 		}
 	}
