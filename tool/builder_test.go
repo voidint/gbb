@@ -23,13 +23,14 @@ func TestBuild(t *testing.T) {
 				Version: "0.3.0",
 				Tool:    "gb build",
 				Package: "github.com/voidint/gbb/build",
+				Debug:   true,
 			}
 
 			Convey("包含非法变量表达式", func() {
 				c.Variables = []config.Variable{
 					{Variable: "Date", Value: "xxxx"},
 				}
-				err := Build(c, true, "./")
+				err := Build(c, "./")
 				So(err, ShouldNotBeNil)
 			})
 
@@ -37,7 +38,7 @@ func TestBuild(t *testing.T) {
 				c.Variables = []config.Variable{
 					{Variable: "Date", Value: "{{.Date}}"},
 				}
-				err := Build(c, true, "./")
+				err := Build(c, "./")
 				So(err, ShouldBeNil)
 			})
 
@@ -47,9 +48,10 @@ func TestBuild(t *testing.T) {
 			c := &config.Config{
 				Version: "0.3.0",
 				Tool:    "gb build",
+				Debug:   true,
 			}
 
-			err := Build(c, true, "./")
+			err := Build(c, "./")
 			So(err, ShouldBeNil)
 		})
 	})
@@ -62,9 +64,10 @@ func TestBuild(t *testing.T) {
 			Variables: []config.Variable{
 				{Variable: "Date", Value: "{{.Date}}"},
 			},
+			Debug: true,
 		}
 
-		err := Build(c, true, "./")
+		err := Build(c, "./")
 		So(err, ShouldBeNil)
 
 	})
@@ -73,9 +76,10 @@ func TestBuild(t *testing.T) {
 		c := &config.Config{
 			Version: "0.3.0",
 			Tool:    "unsupported tool",
+			Debug:   true,
 		}
 
-		err := Build(c, true, "./")
+		err := Build(c, "./")
 		So(err, ShouldEqual, ErrBuildTool)
 	})
 }
