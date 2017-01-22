@@ -11,17 +11,29 @@ import (
 	"github.com/voidint/gbb/util"
 )
 
-var confFile, wd string
-var debug bool
+const (
+	// DefaultConfFile 默认配置文件路径（./gbb.json）
+	DefaultConfFile = "gbb.json"
+)
+
+var (
+	wd       string // 当前工作目录
+	confFile string // 配置文件路径
+	debug    bool   // 是否开启debug模式
+)
 
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
 	Use:   "gbb",
-	Short: "",
+	Short: "Compile assistant",
 	Long:  ``,
 
 	Run: func(cmd *cobra.Command, args []string) {
-		if !util.FileExist("./gbb.json") {
+		if confFile == DefaultConfFile {
+			confFile = filepath.Join(wd, "gbb.json")
+		}
+
+		if !util.FileExist(confFile) {
 			genConfigFile(confFile)
 			return
 		}
@@ -57,6 +69,7 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(initConfig)
 	RootCmd.PersistentFlags().BoolVar(&debug, "debug", false, "Enable debug mode")
+	RootCmd.PersistentFlags().StringVar(&confFile, "config", DefaultConfFile, "Configuration file")
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -67,5 +80,4 @@ func initConfig() {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(-1)
 	}
-	confFile = filepath.Join(wd, "gbb.json")
 }
