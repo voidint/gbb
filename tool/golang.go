@@ -4,6 +4,7 @@ import (
 	"go/ast"
 	"go/parser"
 	"go/token"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -31,8 +32,7 @@ func (b *GoBuilder) Build(rootDir string) error {
 		return err
 	}
 	for i := range paths {
-		dir := filepath.Dir(paths[i])
-		if err = buildDir(b.conf, dir); err != nil {
+		if err = buildDir(b.conf, paths[i]); err != nil {
 			return err
 		}
 	}
@@ -63,7 +63,7 @@ func walkMainDir(rootDir string) (paths []string, err error) {
 			return err
 		}
 		if yes {
-			paths = append(paths, path)
+			paths = append(paths, filepath.Dir(path))
 		}
 
 		return nil
@@ -86,6 +86,54 @@ func hasMain(srcfile string) (bool, error) {
 	for _, decl := range f.Decls {
 		fnDecl, ok := decl.(*ast.FuncDecl)
 		if ok && fnDecl.Name != nil && fnDecl.Name.Name == "main" {
+			return true, nil
+		}
+	}
+	return false, nil
+}
+
+func walkPkgDir(rootDir string) (paths []string, err error) {
+	return paths, filepath.Walk(rootDir, func(path string, info os.FileInfo, e error) error {
+		if e != nil {
+			return e
+		}
+
+		if !info.IsDir() {
+			return nil
+		}
+
+		if info.Name() == "vendor" ||
+			(runtime.GOOS != "windows" && strings.HasPrefix(info.Name(), ".")) {
+			return filepath.SkipDir
+		}
+
+		yes, err := isGoPkg(path)
+		if err != nil {
+			return err
+		}
+		if yes {
+			paths = append(paths, path)
+		}
+		return nil
+	})
+}
+
+// isGoPkg 判断路径是否是golang的包
+func isGoPkg(path string) (yes bool, err error) {
+	path = strings.TrimSpace(path)
+	if path == "" {
+		return false, nil
+	}
+	infos, err := ioutil.ReadDir(path)
+	if err != nil {
+		return false, err
+	}
+
+	for i := range infos {
+		if infos[i].IsDir() {
+			continue
+		}
+		if ext := filepath.Ext(infos[i].Name()); ext == ".go" { // TODO 排除go test目录
 			return true, nil
 		}
 	}
