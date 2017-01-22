@@ -20,10 +20,10 @@ func TestBuild(t *testing.T) {
 	Convey("调用gb build编译", t, func() {
 		Convey("包含变量表达式", func() {
 			c := &config.Config{
-				Version: "0.3.0",
-				Tool:    "gb build",
-				Package: "github.com/voidint/gbb/build",
-				Debug:   true,
+				Version:    "0.3.0",
+				Tool:       "gb build",
+				Importpath: "github.com/voidint/gbb/build",
+				Debug:      true,
 			}
 
 			Convey("包含非法变量表达式", func() {
@@ -58,9 +58,9 @@ func TestBuild(t *testing.T) {
 
 	Convey("调用go build编译", t, func() {
 		c := &config.Config{
-			Version: "0.3.0",
-			Tool:    "go build",
-			Package: "github.com/voidint/gbb/build",
+			Version:    "0.3.0",
+			Tool:       "go build",
+			Importpath: "github.com/voidint/gbb/build",
 			Variables: []config.Variable{
 				{Variable: "Date", Value: "{{.Date}}"},
 			},

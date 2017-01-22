@@ -7,11 +7,11 @@ import (
 
 // Config 配置结构体
 type Config struct {
-	Version   string     `json:"version"`             // 版本号
-	Tool      string     `json:"tool"`                // 编译工具：go、gb...
-	Package   string     `json:"package,omitempty"`   // 待替换的变量所在包导入路径，如github.com/voidint/gbb/build
-	Variables []Variable `json:"variables,omitempty"` // 待替换变量集合
-	Debug     bool       `json:"-"`
+	Version    string     `json:"version"`              // 版本号
+	Tool       string     `json:"tool"`                 // 编译工具：go、gb...
+	Importpath string     `json:"importpath,omitempty"` // 待替换的变量所在包导入路径，如github.com/voidint/gbb/build
+	Variables  []Variable `json:"variables,omitempty"`  // 待替换变量集合
+	Debug      bool       `json:"-"`
 }
 
 // Variable 变量结构体

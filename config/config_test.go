@@ -20,9 +20,9 @@ func TestLoad(t *testing.T) {
 		Convey("预期配置文件存在，实际文件存在", func() {
 			Convey("配置文件内容为合法JSON", func() {
 				c := Config{
-					Version: "0.1.1",
-					Tool:    "go install",
-					Package: "github.com/voidint/gbb/build",
+					Version:    "0.1.1",
+					Tool:       "go install",
+					Importpath: "github.com/voidint/gbb/build",
 					Variables: []Variable{
 						{Variable: "Date", Value: "{{.Date}}"},
 						{Variable: "Commit", Value: "{{.GitCommit}}"},
@@ -37,7 +37,7 @@ func TestLoad(t *testing.T) {
 				So(loadC, ShouldNotBeNil)
 				So(loadC.Version, ShouldEqual, c.Version)
 				So(loadC.Tool, ShouldEqual, c.Tool)
-				So(loadC.Package, ShouldEqual, c.Package)
+				So(loadC.Importpath, ShouldEqual, c.Importpath)
 				So(len(loadC.Variables), ShouldEqual, len(c.Variables))
 				So(loadC.Variables[0].Variable, ShouldEqual, c.Variables[0].Variable)
 				So(loadC.Variables[0].Value, ShouldEqual, c.Variables[0].Value)
@@ -78,9 +78,9 @@ func TestSave(t *testing.T) {
 		filename := filepath.Join(os.TempDir(), "gbb.json")
 		Convey("配置对象和磁盘文件都合法", func() {
 			c := Config{
-				Version: "0.1.1",
-				Tool:    "go install",
-				Package: "github.com/voidint/gbb/build",
+				Version:    "0.1.1",
+				Tool:       "go install",
+				Importpath: "github.com/voidint/gbb/build",
 				Variables: []Variable{
 					{Variable: "Date", Value: "{{.Date}}"},
 					{Variable: "Commit", Value: "{{.GitCommit}}"},
@@ -94,7 +94,7 @@ func TestSave(t *testing.T) {
 			So(loadC, ShouldNotBeNil)
 			So(loadC.Version, ShouldEqual, c.Version)
 			So(loadC.Tool, ShouldEqual, c.Tool)
-			So(loadC.Package, ShouldEqual, c.Package)
+			So(loadC.Importpath, ShouldEqual, c.Importpath)
 			So(len(loadC.Variables), ShouldEqual, len(c.Variables))
 			So(loadC.Variables[0].Variable, ShouldEqual, c.Variables[0].Variable)
 			So(loadC.Variables[0].Value, ShouldEqual, c.Variables[0].Value)

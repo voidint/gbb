@@ -52,7 +52,7 @@ It only covers the most common items, and tries to guess sensible defaults.`)
 	}
 
 	// optional
-	c.Package = gatherOne("package", "main")
+	c.Importpath = gatherOne("importpath", "main")
 	for {
 		c.Variables = append(c.Variables, *gatherOneVar())
 

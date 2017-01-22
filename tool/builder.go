@@ -65,7 +65,7 @@ func buildDir(conf *config.Config, dir string) (err error) {
 		if conf.Debug {
 			fmt.Println(val)
 		}
-		buf.WriteString(fmt.Sprintf(`-X "%s.%s=%s"`, conf.Package, varName, val))
+		buf.WriteString(fmt.Sprintf(`-X "%s.%s=%s"`, conf.Importpath, varName, val))
 		if i < len(conf.Variables)-1 {
 			buf.WriteByte(' ')
 		}
