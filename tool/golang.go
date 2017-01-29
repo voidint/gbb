@@ -4,7 +4,6 @@ import (
 	"go/ast"
 	"go/parser"
 	"go/token"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -27,7 +26,7 @@ func NewGoBuilder(conf *config.Config) *GoBuilder {
 
 // Build 切换到指定工作目录后调用编译工具编译。
 func (b *GoBuilder) Build(rootDir string) error {
-	paths, err := walkMainDir(rootDir)
+	paths, err := walkPkgs(rootDir)
 	if err != nil {
 		return err
 	}
@@ -40,7 +39,7 @@ func (b *GoBuilder) Build(rootDir string) error {
 }
 
 // 查找root及其子孙目录下所有的main包路径
-func walkMainDir(rootDir string) (paths []string, err error) {
+func walkMainPkgs(rootDir string) (paths []string, err error) {
 	return paths, filepath.Walk(rootDir, func(path string, info os.FileInfo, e error) error {
 		if e != nil {
 			return e
@@ -92,7 +91,7 @@ func hasMain(srcfile string) (bool, error) {
 	return false, nil
 }
 
-func walkPkgDir(rootDir string) (paths []string, err error) {
+func walkPkgs(rootDir string) (paths []string, err error) {
 	return paths, filepath.Walk(rootDir, func(path string, info os.FileInfo, e error) error {
 		if e != nil {
 			return e
@@ -120,22 +119,45 @@ func walkPkgDir(rootDir string) (paths []string, err error) {
 
 // isGoPkg 判断路径是否是golang的包
 func isGoPkg(path string) (yes bool, err error) {
-	path = strings.TrimSpace(path)
+	// path = strings.TrimSpace(path)
+	// if path == "" {
+	// 	return false, nil
+	// }
+	// infos, err := ioutil.ReadDir(path)
+	// if err != nil {
+	// 	return false, err
+	// }
+
+	// for i := range infos {
+	// 	if infos[i].IsDir() {
+	// 		continue
+	// 	}
+	// 	if ext := filepath.Ext(infos[i].Name()); ext == ".go" { // TODO 排除go test目录
+	// 		return true, nil
+	// 	}
+	// }
+	// return false, nil
+
 	if path == "" {
 		return false, nil
 	}
-	infos, err := ioutil.ReadDir(path)
+	fset := token.NewFileSet()
+	pkgs, err := parser.ParseDir(fset, path, nil, 0)
 	if err != nil {
 		return false, err
 	}
+	return len(pkgs) > 0, nil
+}
 
-	for i := range infos {
-		if infos[i].IsDir() {
-			continue
-		}
-		if ext := filepath.Ext(infos[i].Name()); ext == ".go" { // TODO 排除go test目录
-			return true, nil
-		}
+func isMainPkg(path string) (yes bool, err error) {
+	if path == "" {
+		return false, nil
 	}
-	return false, nil
+	fset := token.NewFileSet()
+	pkgs, err := parser.ParseDir(fset, path, nil, 0)
+	if err != nil {
+		return false, err
+	}
+	_, yes = pkgs["main"]
+	return yes, nil
 }

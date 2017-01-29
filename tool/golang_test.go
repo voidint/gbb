@@ -32,13 +32,13 @@ func TestHasMain(t *testing.T) {
 	})
 }
 
-func TestWalkMainDir(t *testing.T) {
+func TestWalkMainPkgs(t *testing.T) {
 	Convey("遍历根目录及其子目录查找包含main函数的源代码文件路径", t, func() {
 		dir, err := os.Getwd()
 		So(err, ShouldBeNil)
 		So(strings.HasSuffix(dir, filepath.Join("src", "github.com", "voidint", "gbb", "tool")), ShouldBeTrue)
 		workspace := strings.TrimRight(dir, fmt.Sprintf("%ctool", os.PathSeparator))
-		paths, err := walkMainDir(workspace)
+		paths, err := walkMainPkgs(workspace)
 		So(err, ShouldBeNil)
 		So(paths, ShouldNotBeEmpty)
 		So(len(paths), ShouldEqual, 1)
@@ -46,17 +46,17 @@ func TestWalkMainDir(t *testing.T) {
 	})
 }
 
-func TestWalkPkgDir(t *testing.T) {
+func TestWalkPkgs(t *testing.T) {
 	Convey("查找指定目录及其子目录下所有满足golang包的目录路径", t, func() {
 		wd, err := os.Getwd()
 		So(err, ShouldBeNil)
-		paths, err := walkPkgDir(wd)
+		paths, err := walkPkgs(wd)
 		So(err, ShouldBeNil)
 		So(paths, ShouldNotBeEmpty)
 		So(len(paths), ShouldEqual, 1)
 		So(paths[0], ShouldEqual, wd)
 
-		paths, err = walkPkgDir(strings.TrimRight(wd, "tool"))
+		paths, err = walkPkgs(strings.TrimRight(wd, "tool"))
 		So(err, ShouldBeNil)
 		So(paths, ShouldNotBeEmpty)
 		So(len(paths), ShouldEqual, 7)
@@ -75,7 +75,7 @@ func TestWalkPkgDir(t *testing.T) {
 			})
 			defer monkey.Unpatch(isGoPkg)
 
-			paths, err := walkPkgDir(wd)
+			paths, err := walkPkgs(wd)
 			So(err, ShouldNotBeNil)
 			So(err, ShouldEqual, ErrIsGoPkg)
 			So(paths, ShouldBeEmpty)
@@ -125,6 +125,64 @@ func TestIsGoPkg(t *testing.T) {
 			Convey("路径不存在", func() {
 				yes, err := isGoPkg(filepath.Join(wd, "not_exist_dir"))
 				So(err, ShouldNotBeNil)
+				So(yes, ShouldBeFalse)
+			})
+		})
+	})
+}
+
+func TestIsMainPkg(t *testing.T) {
+	Convey("检查指定路径是否是main包", t, func() {
+		wd, err := os.Getwd()
+		So(err, ShouldBeNil)
+		So(wd, ShouldNotBeBlank)
+
+		Convey("合法路径", func() {
+			Convey("非main包且不包含子包", func() {
+				yes, err := isMainPkg(wd)
+				So(err, ShouldBeNil)
+				So(yes, ShouldBeFalse)
+			})
+			Convey("非main包且包含子包", func() {
+				path := filepath.Join(
+					strings.TrimRight(wd, "tool"),
+					"vendor", "github.com", "smartystreets", "assertions",
+				)
+				yes, err := isMainPkg(path)
+				So(err, ShouldBeNil)
+				So(yes, ShouldBeFalse)
+			})
+
+			Convey("main包", func() {
+				yes, err := isMainPkg(strings.TrimRight(wd, "tool"))
+				So(err, ShouldBeNil)
+				So(yes, ShouldBeTrue)
+			})
+		})
+
+		Convey("非法路径", func() {
+			Convey("路径为空", func() {
+				yes, err := isMainPkg("")
+				So(err, ShouldBeNil)
+				So(yes, ShouldBeFalse)
+			})
+			Convey("路径非目录", func() {
+				yes, err := isMainPkg(filepath.Join(wd, "golang_test.go"))
+				So(err, ShouldNotBeNil)
+				So(yes, ShouldBeFalse)
+			})
+			Convey("路径不存在", func() {
+				yes, err := isMainPkg(filepath.Join(wd, "not_exist_dir"))
+				So(err, ShouldNotBeNil)
+				So(yes, ShouldBeFalse)
+			})
+			Convey("路径下不包含go源文件(非包路径)", func() {
+				path := filepath.Join(
+					strings.TrimRight(wd, "tool"),
+					"vendor", "github.com",
+				)
+				yes, err := isMainPkg(path)
+				So(err, ShouldBeNil)
 				So(yes, ShouldBeFalse)
 			})
 		})

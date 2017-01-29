@@ -207,7 +207,7 @@ It only covers the most common items, and tries to guess sensible defaults.
 Press ^C at any time to quit.
 tool: (go_install) go_build
 Do you want to continue?[y/n] y
-package: (main) github.com/voidint/gbb/build
+importpath: (main) github.com/voidint/gbb/build
 variable: Date
 value: {{.Date}}
 Do you want to continue?[y/n] y
@@ -219,7 +219,7 @@ About to write to /Users/voidint/cloud/workspace/go/lib/src/github.com/voidint/g
 {
     "version": "0.2.0",
     "tool": "go build",
-    "package": "github.com/voidint/gbb/build",
+    "importpath": "github.com/voidint/gbb/build",
     "variables": [
         {
             "variable": "Date",
@@ -261,7 +261,7 @@ commit: db8b606cfc2b24a24e2e09acac24a52c47b68401
 {
     "version": "0.2.0",
     "tool": "go build",
-    "package": "github.com/voidint/gbb/build",
+    "importpath": "github.com/voidint/gbb/build",
     "variables": [
         {
             "variable": "Date",
@@ -289,6 +289,10 @@ commit: db8b606cfc2b24a24e2e09acac24a52c47b68401
 	
 	
 ## changelog
+### 0.4.0 - 
+- `gbb.json`中的配置项`package`重命名为`importpath`。[#9](https://github.com/voidint/gbb/issues/9)
+- 新增命令行选项`--config`用于自定义配置文件路径。[#16](https://github.com/voidint/gbb/issues/16)
+
 ### 0.3.0 - 2017/01/09
 - 若开启debug模式`gbb --debug`，那么变量表达式求值过程详情也一并输出。[#12](https://github.com/voidint/gbb/issues/12) [#6](https://github.com/voidint/gbb/issues/6)
 - 变量表达式首字母大写。[#11](https://github.com/voidint/gbb/issues/11)
