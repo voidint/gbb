@@ -1,14 +1,30 @@
 package tool
 
 import (
+	"os"
 	"os/exec"
+	"path/filepath"
 	"reflect"
+	"strings"
 	"testing"
 
 	"github.com/bouk/monkey"
 	. "github.com/smartystreets/goconvey/convey"
 	"github.com/voidint/gbb/config"
 )
+
+func initDir() {
+	wd, _ := os.Getwd()
+	if strings.HasSuffix(wd, "tool") {
+		return
+	}
+	idx := strings.Index(wd, filepath.Join("github.com", "voidint", "gbb"))
+	if idx < 0 {
+		return
+	}
+	wd = filepath.Join(wd[:idx], "github.com", "voidint", "gbb", "tool")
+	_ = os.Chdir(wd)
+}
 
 func TestBuild(t *testing.T) {
 	var cmd *exec.Cmd
@@ -18,6 +34,12 @@ func TestBuild(t *testing.T) {
 	defer monkey.UnpatchInstanceMethod(reflect.TypeOf(cmd), "Run")
 
 	Convey("调用gb build编译", t, func() {
+		initDir()
+		wd, err := os.Getwd()
+		So(err, ShouldBeNil)
+		So(wd, ShouldNotBeBlank)
+		So(strings.HasSuffix(wd, "tool"), ShouldBeTrue)
+
 		Convey("包含变量表达式", func() {
 			c := &config.Config{
 				Version:    "0.3.0",
@@ -30,7 +52,7 @@ func TestBuild(t *testing.T) {
 				c.Variables = []config.Variable{
 					{Variable: "Date", Value: "xxxx"},
 				}
-				err := Build(c, "./")
+				err := Build(c, strings.TrimRight(wd, "tool"))
 				So(err, ShouldNotBeNil)
 			})
 
