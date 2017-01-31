@@ -24,7 +24,9 @@ var (
 
 // Build 根据配置信息，调用合适的编译工具进行编译。
 // 若配置的编译工具不在支持的工具范围内，则返回ErrBuildTool错误。
-func Build(conf *config.Config, dir string) error {
+func Build(conf *config.Config, dir string) (err error) {
+	defer chdir(dir, conf.Debug) // init work directory
+
 	if strings.HasPrefix(conf.Tool, "go ") {
 		return NewGoBuilder(conf).Build(dir)
 	} else if strings.HasPrefix(conf.Tool, "gb ") {
