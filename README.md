@@ -292,6 +292,7 @@ commit: db8b606cfc2b24a24e2e09acac24a52c47b68401
 ### 0.4.0 - 
 - `gbb.json`中的配置项`package`重命名为`importpath`。[#9](https://github.com/voidint/gbb/issues/9)
 - 新增命令行选项`--config`用于自定义配置文件路径。[#16](https://github.com/voidint/gbb/issues/16)
+- 支持编译非main包。[#10](https://github.com/voidint/gbb/issues/10)
 
 ### 0.3.0 - 2017/01/09
 - 若开启debug模式`gbb --debug`，那么变量表达式求值过程详情也一并输出。[#12](https://github.com/voidint/gbb/issues/12) [#6](https://github.com/voidint/gbb/issues/6)
