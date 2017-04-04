@@ -1,6 +1,7 @@
 package tool
 
 import (
+	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -103,5 +104,26 @@ func TestBuild(t *testing.T) {
 
 		err := Build(c, "./")
 		So(err, ShouldEqual, ErrBuildTool)
+	})
+}
+
+func TestChdir(t *testing.T) {
+	Convey("切换工作目录", t, func() {
+		Convey("目标目录是当前目录", func() {
+			wd, err := os.Getwd()
+			So(err, ShouldBeNil)
+			So(chdir(wd, true), ShouldBeNil)
+		})
+
+		Convey("目标目录非当前目录", func() {
+			wd, err := os.Getwd()
+			So(err, ShouldBeNil)
+
+			defer chdir(wd, true) // init work directory
+
+			if idx := strings.LastIndex(wd, fmt.Sprintf("%c", os.PathSeparator)); idx > 0 {
+				So(chdir(wd[:idx], true), ShouldBeNil)
+			}
+		})
 	})
 }

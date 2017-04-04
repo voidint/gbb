@@ -1,10 +1,12 @@
 package tool
 
 import (
+	"fmt"
 	"go/ast"
 	"go/parser"
 	"go/token"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"runtime"
 	"strings"
@@ -31,11 +33,52 @@ func (b *GoBuilder) Build(rootDir string) error {
 		return err
 	}
 	for i := range paths {
-		if err = buildDir(b.conf, paths[i]); err != nil {
+		if err = b.buildDir(paths[i]); err != nil {
 			return err
 		}
 	}
 	return nil
+}
+
+// 切换到指定工作目录，调用指定的编译工具进行编译。
+func (b *GoBuilder) buildDir(dir string) error {
+	if err := chdir(dir, b.conf.Debug); err != nil {
+		return err
+	}
+
+	cmdArgs := strings.Fields(b.conf.Tool) // go install ==> []string{"go", "install"}
+
+	mainPkg, err := isMainPkg(dir)
+	if err != nil {
+		return err
+	}
+	if mainPkg {
+		flags, err := ldflags(b.conf)
+		if err != nil {
+			return err
+		}
+		if flags != "" {
+			cmdArgs = append(cmdArgs, "-ldflags", flags)
+		}
+	}
+
+	if b.conf.Debug {
+		fmt.Print("==> ", cmdArgs[0])
+		args := cmdArgs[1:]
+		for i := range args {
+			if i-1 > 0 && args[i-1] == "-ldflags" {
+				fmt.Printf(" '%s'", args[i])
+			} else {
+				fmt.Printf(" %s", args[i])
+			}
+		}
+		fmt.Println()
+	}
+
+	cmd := exec.Command(cmdArgs[0], cmdArgs[1:]...)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	return cmd.Run()
 }
 
 // 查找root及其子孙目录下所有的main包路径

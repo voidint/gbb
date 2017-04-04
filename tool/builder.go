@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	"os/exec"
 	"strings"
 
 	"github.com/voidint/gbb/config"
@@ -33,47 +32,6 @@ func Build(conf *config.Config, dir string) (err error) {
 		return NewGBBuilder(conf).Build(dir)
 	}
 	return ErrBuildTool
-}
-
-// buildDir 切换到指定工作目录，调用指定的编译工具进行编译。
-func buildDir(conf *config.Config, dir string) (err error) {
-	if err = chdir(dir, conf.Debug); err != nil {
-		return err
-	}
-
-	cmdArgs := strings.Fields(conf.Tool) // go install ==> []string{"go", "install"}
-
-	mainPkg, err := isMainPkg(dir)
-	if err != nil {
-		return err
-	}
-	if mainPkg {
-		flags, err := ldflags(conf)
-		if err != nil {
-			return err
-		}
-		if flags != "" {
-			cmdArgs = append(cmdArgs, "-ldflags", flags)
-		}
-	}
-
-	if conf.Debug {
-		fmt.Print("==> ", cmdArgs[0])
-		args := cmdArgs[1:]
-		for i := range args {
-			if i-1 > 0 && args[i-1] == "-ldflags" {
-				fmt.Printf(" '%s'", args[i])
-			} else {
-				fmt.Printf(" %s", args[i])
-			}
-		}
-		fmt.Println()
-	}
-
-	cmd := exec.Command(cmdArgs[0], cmdArgs[1:]...)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	return cmd.Run()
 }
 
 func chdir(dir string, debug bool) (err error) {
