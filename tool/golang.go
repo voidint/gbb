@@ -2,7 +2,6 @@ package tool
 
 import (
 	"fmt"
-	"go/ast"
 	"go/parser"
 	"go/token"
 	"os"
@@ -81,59 +80,6 @@ func (b *GoBuilder) buildDir(dir string) error {
 	return cmd.Run()
 }
 
-// 查找root及其子孙目录下所有的main包路径
-func walkMainPkgs(rootDir string) (paths []string, err error) {
-	return paths, filepath.Walk(rootDir, func(path string, info os.FileInfo, e error) error {
-		if e != nil {
-			return e
-		}
-
-		if info.IsDir() {
-			if info.Name() == "vendor" ||
-				(runtime.GOOS != "windows" && strings.HasPrefix(info.Name(), ".")) {
-				return filepath.SkipDir
-			}
-			return nil
-		}
-
-		if ext := filepath.Ext(path); ext != ".go" {
-			return nil
-		}
-
-		yes, err := hasMain(path)
-		if err != nil {
-			return err
-		}
-		if yes {
-			paths = append(paths, filepath.Dir(path))
-		}
-
-		return nil
-	})
-}
-
-// hasMain 返回指定的go源文件中是否含程序入口。
-// Thanks to @stevewang
-func hasMain(srcfile string) (bool, error) {
-	fset := token.NewFileSet()
-	f, err := parser.ParseFile(fset, srcfile, nil, 0)
-	if err != nil {
-		return false, err
-	}
-
-	if f.Name.Name != "main" {
-		return false, nil
-	}
-
-	for _, decl := range f.Decls {
-		fnDecl, ok := decl.(*ast.FuncDecl)
-		if ok && fnDecl.Name != nil && fnDecl.Name.Name == "main" {
-			return true, nil
-		}
-	}
-	return false, nil
-}
-
 func walkPkgs(rootDir string) (paths []string, err error) {
 	return paths, filepath.Walk(rootDir, func(path string, info os.FileInfo, e error) error {
 		if e != nil {
@@ -162,25 +108,6 @@ func walkPkgs(rootDir string) (paths []string, err error) {
 
 // isGoPkg 判断路径是否是golang的包
 func isGoPkg(path string) (yes bool, err error) {
-	// path = strings.TrimSpace(path)
-	// if path == "" {
-	// 	return false, nil
-	// }
-	// infos, err := ioutil.ReadDir(path)
-	// if err != nil {
-	// 	return false, err
-	// }
-
-	// for i := range infos {
-	// 	if infos[i].IsDir() {
-	// 		continue
-	// 	}
-	// 	if ext := filepath.Ext(infos[i].Name()); ext == ".go" { // TODO 排除go test目录
-	// 		return true, nil
-	// 	}
-	// }
-	// return false, nil
-
 	if path == "" {
 		return false, nil
 	}

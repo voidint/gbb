@@ -2,7 +2,6 @@ package tool
 
 import (
 	"errors"
-	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -11,46 +10,6 @@ import (
 	"github.com/bouk/monkey"
 	. "github.com/smartystreets/goconvey/convey"
 )
-
-func TestHasMain(t *testing.T) {
-	Convey("检测指定的go源代码文件中是否包含main函数", t, func() {
-		wd, err := os.Getwd()
-		So(err, ShouldBeNil)
-		So(wd, ShouldNotBeBlank)
-		So(strings.HasSuffix(wd, "tool"), ShouldBeTrue)
-
-		Convey("不包含main函数的go源代码文件", func() {
-			yes, err := hasMain(filepath.Join(wd, "golang.go"))
-			So(err, ShouldBeNil)
-			So(yes, ShouldBeFalse)
-		})
-		Convey("包含main函数的go源代码文件", func() {
-			yes, err := hasMain(filepath.Join(strings.TrimRight(wd, "tool"), "main.go"))
-			So(err, ShouldBeNil)
-			So(yes, ShouldBeTrue)
-		})
-		Convey("非go源代码文件", func() {
-			yes, err := hasMain(filepath.Join(strings.TrimRight(wd, "tool"), "gbb.json"))
-			So(err, ShouldNotBeNil)
-			So(yes, ShouldBeFalse)
-		})
-	})
-}
-
-func TestWalkMainPkgs(t *testing.T) {
-	Convey("遍历根目录及其子目录查找包含main函数的源代码文件路径", t, func() {
-		wd, err := os.Getwd()
-		So(err, ShouldBeNil)
-		So(strings.HasSuffix(wd, "tool"), ShouldBeTrue)
-		So(strings.HasSuffix(wd, filepath.Join("src", "github.com", "voidint", "gbb", "tool")), ShouldBeTrue)
-		workspace := strings.TrimRight(wd, fmt.Sprintf("%ctool", os.PathSeparator))
-		paths, err := walkMainPkgs(workspace)
-		So(err, ShouldBeNil)
-		So(paths, ShouldNotBeEmpty)
-		So(len(paths), ShouldEqual, 1)
-		So(paths[0], ShouldEqual, workspace)
-	})
-}
 
 func TestWalkPkgs(t *testing.T) {
 	Convey("查找指定目录及其子目录下所有满足golang包的目录路径", t, func() {
