@@ -45,9 +45,21 @@ var RootCmd = &cobra.Command{
 		conf.Debug = debug
 
 		if conf.Version != Version {
-			fmt.Printf("The gbb.json file needs to be upgraded.\n\n")
-			genConfigFile(confFile)
+			gt, err := util.VersionGreaterThan(Version, conf.Version)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, err.Error())
+				os.Exit(-1)
+			}
+
+			if gt { // 程序版本大于配置文件版本，重新生成配置文件。
+				fmt.Printf("Warning: The gbb.json file needs to be upgraded.\n\n")
+				genConfigFile(confFile)
+			} else {
+				// 配置文件版本大于程序版本，提醒用户升级程序。
+				fmt.Printf("Warning: The program needs to be upgraded (go get -u -v github.com/voidint/gbb)\n\n")
+			}
 			return
+
 		}
 
 		if err := tool.Build(conf, wd); err != nil {
