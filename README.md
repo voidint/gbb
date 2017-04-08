@@ -289,6 +289,9 @@ commit: db8b606cfc2b24a24e2e09acac24a52c47b68401
 	
 	
 ## changelog
+### 0.5.0 - 
+- Fixbug: gbb.json中的`version`值不满足`xx.xx.xx`格式情况下，提示语的末尾出现意外的`%`。[#20](https://github.com/voidint/gbb/issues/20)
+
 ### 0.4.0 - 2017/04/08
 - 支持编译当前目录下所有go package，不再仅限于编译main package。[#10](https://github.com/voidint/gbb/issues/10)
 - `gbb.json`中的配置项`package`重命名为`importpath`。[#9](https://github.com/voidint/gbb/issues/9)
