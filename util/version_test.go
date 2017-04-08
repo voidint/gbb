@@ -12,15 +12,15 @@ func TestVersionGreaterThan(t *testing.T) {
 		var err error
 		Convey("参数中包含非语义化版本号", func() {
 			yes, err = VersionGreaterThan("1.0.5.6", "0.0.1")
-			So(err, ShouldEqual, ErrSemVersion)
+			So(err, ShouldEqual, ErrSemanticVersion)
 			So(yes, ShouldBeFalse)
 
 			yes, err = VersionGreaterThan("0.1.2", "v0.0.1")
-			So(err, ShouldEqual, ErrSemVersion)
+			So(err, ShouldEqual, ErrSemanticVersion)
 			So(yes, ShouldBeFalse)
 
 			yes, err = VersionGreaterThan("a.b.c", "0.0.1")
-			So(err, ShouldEqual, ErrSemVersion)
+			So(err, ShouldEqual, ErrSemanticVersion)
 			So(yes, ShouldBeFalse)
 		})
 

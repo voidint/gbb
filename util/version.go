@@ -7,17 +7,17 @@ import (
 	"strings"
 )
 
-// ErrSemVersion 非语义化版本号错误
-var ErrSemVersion = errors.New("invalid sem version")
+// ErrSemanticVersion 非语义化版本号错误
+var ErrSemanticVersion = errors.New("malformed semantic version")
 
 var semVerReg = regexp.MustCompile("^\\d+\\.\\d+.\\d+$")
 
 // VersionGreaterThan 对比v0的语义化版本号是否大于v1的语义化版本号。
-// 若入参的版本号不符合语义化版本号规范，则返回ErrSemVersion。
+// 若入参的版本号不符合语义化版本号规范，则返回ErrSemanticVersion。
 // 关于语义化版本号内容，请参考http://semver.org/。
 func VersionGreaterThan(v0, v1 string) (yes bool, err error) {
 	if !semVerReg.MatchString(v0) || !semVerReg.MatchString(v1) {
-		return false, ErrSemVersion
+		return false, ErrSemanticVersion
 	}
 
 	const sep = "."
