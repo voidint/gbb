@@ -34,7 +34,7 @@ $ tree ./github.com/voidint/test
 
 4 directories, 4 files
 ```
-对于这样子目录结构，该怎么去编译这些个程序？假如使用的是原生的`go build/install`工具，那么可能会尝试这样去编译：
+对于这样子目录结构，该怎么去编译这些个程序？假设使用原生的`go build/install`工具，也许会这么做：
 
 - 输入完整的路径编译
 
@@ -77,7 +77,7 @@ commit: db8b606cfc2b24a24e2e09acac24a52c47b68401
 ## 特性
 根据以上的场景描述，可以简单地将主要特性归纳为如下几条：
 
-- 项目根目录下一键编译项目下多个`main`入口程序。
+- 一键编译当前目录下所有go package。
 - 支持编译时自动“嵌入”信息到二进制可执行文件，典型的如嵌入`编译时间`和源代码`Commit`信息到二进制可执行文件的版本信息当中。
 - 首次运行会在项目根目录自动生成`gbb.json`配置文件，今后编译操作所需的信息都从此文件读取，不再打扰用户，做安静美男子。
 
@@ -190,7 +190,7 @@ Do you want to continue?[y/n] n
 About to write to /Users/voidint/cloud/workspace/go/lib/src/github.com/voidint/gbb/gbb.json:
 
 {
-    "version": "0.2.0",
+    "version": "0.4.0",
     "tool": "go build"
 }
 
@@ -217,7 +217,7 @@ Do you want to continue?[y/n] n
 About to write to /Users/voidint/cloud/workspace/go/lib/src/github.com/voidint/gbb/gbb.json:
 
 {
-    "version": "0.2.0",
+    "version": "0.4.0",
     "tool": "go build",
     "importpath": "github.com/voidint/gbb/build",
     "variables": [
@@ -248,7 +248,7 @@ $ gbb --debug
 
 ```
 $ ./gbb version
-gbb version 0.2.0
+gbb version 0.4.0
 date: 2016-12-17T22:18:32+08:00
 commit: db8b606cfc2b24a24e2e09acac24a52c47b68401
 ```
@@ -259,7 +259,7 @@ commit: db8b606cfc2b24a24e2e09acac24a52c47b68401
 
 ``` json
 {
-    "version": "0.2.0",
+    "version": "0.4.0",
     "tool": "go build",
     "importpath": "github.com/voidint/gbb/build",
     "variables": [
@@ -275,9 +275,9 @@ commit: db8b606cfc2b24a24e2e09acac24a52c47b68401
 }
 ```
 
-- `version`: 版本号。
-- `tool`: gbb实际调用的编译工具。已知的可选值包括：`go_build`、`go_install`、`gb_build`。注意：这个值不能包含空格[issue](https://github.com/voidint/gbb/issues/1)，因此暂时通过下划线`_`连接。
-- `pakcage`: 包导入路径，也就是`Date`、`Commit`这类变量所在包的导入路径，如`github.com/voidint/gbb/build`。
+- `version`: 版本号。gbb根据自身版本号自动写入gbb.json。
+- `tool`: gbb实际调用的编译工具。可选值包括：`go_build`、`go_install`、`gb_build`。注意：这个值不能包含空格[issue](https://github.com/voidint/gbb/issues/1)，因此暂时通过下划线`_`连接。
+- `importpath`: 包导入路径，也就是`Date`、`Commit`这类变量所在包的导入路径，如`github.com/voidint/gbb/build`。
 - `variables`: 变量列表。列表中的每个元素都包含`variable`和`value`两个属性。
 	- `variable`变量名，比如`Date`。
 	- `value`变量表达式
@@ -289,10 +289,12 @@ commit: db8b606cfc2b24a24e2e09acac24a52c47b68401
 	
 	
 ## changelog
-### 0.4.0 - 
+### 0.4.0 - 2017/04/08
+- 支持编译当前目录下所有go package，不再仅限于编译main package。[#10](https://github.com/voidint/gbb/issues/10)
 - `gbb.json`中的配置项`package`重命名为`importpath`。[#9](https://github.com/voidint/gbb/issues/9)
 - 新增命令行选项`--config`用于自定义配置文件路径。[#16](https://github.com/voidint/gbb/issues/16)
-- 支持编译非main包。[#10](https://github.com/voidint/gbb/issues/10)
+- 切换目录并编译后重新切换回源目录。[#17](https://github.com/voidint/gbb/issues/17)
+- 当gbb.json的版本号高于gbb程序版本号时给出程序升级提醒。[#19](https://github.com/voidint/gbb/issues/19)
 
 ### 0.3.0 - 2017/01/09
 - 若开启debug模式`gbb --debug`，那么变量表达式求值过程详情也一并输出。[#12](https://github.com/voidint/gbb/issues/12) [#6](https://github.com/voidint/gbb/issues/6)
