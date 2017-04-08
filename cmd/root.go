@@ -56,10 +56,9 @@ var RootCmd = &cobra.Command{
 				genConfigFile(confFile)
 			} else {
 				// 配置文件版本大于程序版本，提醒用户升级程序。
-				fmt.Printf("Warning: The program needs to be upgraded (go get -u -v github.com/voidint/gbb)\n\n")
+				fmt.Printf("Warning: This program needs to be upgraded by `go get -u -v github.com/voidint/gbb`\n\n")
 			}
 			return
-
 		}
 
 		if err := tool.Build(conf, wd); err != nil {
