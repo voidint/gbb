@@ -39,7 +39,7 @@ var RootCmd = &cobra.Command{
 		}
 		conf, err := config.Load(confFile)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, err.Error())
+			fmt.Fprintln(os.Stderr, err.Error())
 			os.Exit(-1)
 		}
 		conf.Debug = debug
@@ -47,7 +47,7 @@ var RootCmd = &cobra.Command{
 		if conf.Version != Version {
 			gt, err := util.VersionGreaterThan(Version, conf.Version)
 			if err != nil {
-				fmt.Fprintf(os.Stderr, err.Error())
+				fmt.Fprintln(os.Stderr, err.Error())
 				os.Exit(-1)
 			}
 
@@ -62,7 +62,7 @@ var RootCmd = &cobra.Command{
 		}
 
 		if err := tool.Build(conf, wd); err != nil {
-			fmt.Fprintf(os.Stderr, err.Error())
+			fmt.Fprintln(os.Stderr, err.Error())
 			os.Exit(-1)
 		}
 	},
