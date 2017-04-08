@@ -68,5 +68,15 @@ func TestGitCommitVarEval(t *testing.T) {
 			So(err, ShouldEqual, ErrEval)
 			So(val, ShouldBeBlank)
 		})
+
+		Convey("panic", func() {
+			monkey.Patch(strings.Fields, func(s string) []string {
+				return []string{}
+			})
+			defer monkey.Unpatch(strings.Fields)
+			So(func() {
+				_, _ = DefaultGitCommitVar.Eval("", true)
+			}, ShouldPanicWith, "unreachable")
+		})
 	})
 }
