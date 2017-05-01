@@ -39,6 +39,7 @@ func (b *GBBuilder) buildDir(dir string) error {
 		return err
 	}
 	if flags != "" {
+		cmdArgs = Args(cmdArgs).RemoveLdflags()
 		cmdArgs = append(cmdArgs, "-ldflags", flags)
 	}
 
@@ -54,7 +55,6 @@ func (b *GBBuilder) buildDir(dir string) error {
 		}
 		fmt.Println()
 	}
-
 	cmd := exec.Command(cmdArgs[0], cmdArgs[1:]...)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr

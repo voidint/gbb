@@ -51,6 +51,12 @@ func chdir(dir string, debug bool) (err error) {
 
 func ldflags(conf *config.Config) (flags string, err error) {
 	var buf bytes.Buffer
+
+	if val := Args(strings.Fields(conf.Tool)).ExtractLdflags(); val != "" {
+		buf.WriteString(val)
+		buf.WriteByte(' ')
+	}
+
 	for i := range conf.Variables {
 		varName := strings.TrimSpace(conf.Variables[i].Variable)
 		varExpr := strings.TrimSpace(conf.Variables[i].Value)
@@ -71,4 +77,58 @@ func ldflags(conf *config.Config) (flags string, err error) {
 		}
 	}
 	return buf.String(), nil
+}
+
+// Args 命令行参数
+type Args []string
+
+// ExtractLdflags 抽取参数中ldflags所对应的值
+func (args Args) ExtractLdflags() string {
+	f := func(r rune) bool {
+		return r == rune('"') || r == rune('\'')
+	}
+	for i, arg := range args {
+		if !strings.Contains(arg, "-ldflags") {
+			continue
+		}
+		// eg. go build -ldflags='-w'
+		idx := strings.Index(arg, "-ldflags=")
+		if idx > -1 {
+			return strings.TrimFunc(arg[idx+len("-ldflags="):], f)
+		}
+		if i >= len(args)-1 || !strings.HasSuffix(arg, "-ldflags") {
+			return ""
+		}
+		// eg. go build -ldflags "-w"
+		return strings.TrimFunc(args[i+1], f)
+	}
+	return ""
+}
+
+// RemoveLdflags 移除ldflags参数及其值
+func (args Args) RemoveLdflags() (news Args) {
+	for i := range args {
+		if !strings.Contains(args[i], "-ldflags") {
+			continue
+		}
+		// eg. go build -ldflags='-w'
+		if strings.Contains(args[i], "-ldflags=") {
+			args[i] = ""
+			continue
+		}
+		// eg. go build -ldflags "-w"
+		if i < len(args)-1 && strings.HasSuffix(args[i], "-ldflags") {
+			args[i] = ""
+			args[i+1] = ""
+			continue
+		}
+	}
+
+	for i := range args {
+		if args[i] == "" {
+			continue
+		}
+		news = append(news, args[i])
+	}
+	return news
 }
