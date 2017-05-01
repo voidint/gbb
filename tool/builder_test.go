@@ -127,3 +127,37 @@ func TestChdir(t *testing.T) {
 		})
 	})
 }
+
+func TestExtractLdflags(t *testing.T) {
+	Convey("抽取-ldflags选项值", t, func() {
+		Convey("不包含该选项", func() {
+			So(Args([]string{"go", "build"}).ExtractLdflags(), ShouldBeEmpty)
+		})
+
+		Convey("存在多个该选项及其值", func() {
+			val := `-X "github.com/voidint/gbb/build.Date=2017-05-01T17:29:47+08:00" -X "github.com/voidint/gbb/build.Commit=07eba0ebf4648b9562182b682db12572da28f158"`
+			So(Args([]string{
+				"go",
+				"build",
+				fmt.Sprintf("-ldflags='%s'", val),
+				"-ldflags",
+				"'-w'",
+			}).ExtractLdflags(), ShouldEqual, val)
+		})
+
+		Convey("存在一个该选项及其值", func() {
+			Convey("选项与值之间使用'='符号分隔", func() {
+				So(Args([]string{"go", "build", "-ldflags='-w'"}).ExtractLdflags(), ShouldEqual, "-w")
+			})
+			Convey("选项与值之间使用空格分隔", func() {
+				So(Args([]string{"go", "build", "-ldflags", "\"-w\""}).ExtractLdflags(), ShouldEqual, "-w")
+			})
+			Convey("值放置在两个单引号内", func() {
+				So(Args([]string{"go", "build", "-ldflags", "'-w'"}).ExtractLdflags(), ShouldEqual, "-w")
+			})
+			Convey("值放置在两个双引号内", func() {
+				So(Args([]string{"go", "build", "-ldflags=\"-w\""}).ExtractLdflags(), ShouldEqual, "-w")
+			})
+		})
+	})
+}
