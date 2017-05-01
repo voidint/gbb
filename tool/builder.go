@@ -84,9 +84,6 @@ type Args []string
 
 // ExtractLdflags 抽取参数中ldflags所对应的值
 func (args Args) ExtractLdflags() string {
-	f := func(r rune) bool {
-		return r == rune('"') || r == rune('\'')
-	}
 	for i, arg := range args {
 		if !strings.Contains(arg, "-ldflags") {
 			continue
@@ -94,13 +91,13 @@ func (args Args) ExtractLdflags() string {
 		// eg. go build -ldflags='-w'
 		idx := strings.Index(arg, "-ldflags=")
 		if idx > -1 {
-			return strings.TrimFunc(arg[idx+len("-ldflags="):], f)
+			return TrimQuotationMarks(arg[idx+len("-ldflags="):])
 		}
 		if i >= len(args)-1 || !strings.HasSuffix(arg, "-ldflags") {
 			return ""
 		}
 		// eg. go build -ldflags "-w"
-		return strings.TrimFunc(args[i+1], f)
+		return TrimQuotationMarks(args[i+1])
 	}
 	return ""
 }
@@ -131,4 +128,14 @@ func (args Args) RemoveLdflags() (news Args) {
 		news = append(news, args[i])
 	}
 	return news
+}
+
+// TrimQuotationMarks 去除字符串前后的单/双引号
+func TrimQuotationMarks(val string) string {
+	if strings.HasSuffix(val, `'`) {
+		return strings.TrimPrefix(strings.TrimSuffix(val, `'`), `'`)
+	} else if strings.HasSuffix(val, `"`) {
+		return strings.TrimPrefix(strings.TrimSuffix(val, `"`), `"`)
+	}
+	return val
 }
