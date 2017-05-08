@@ -161,3 +161,36 @@ func TestExtractLdflags(t *testing.T) {
 		})
 	})
 }
+
+func TestRemoveLdflags(t *testing.T) {
+	Convey("移除参数中的-ldflags", t, func() {
+		var news []string
+		news = Args([]string{"go", "build"}).RemoveLdflags()
+		So(len(news), ShouldEqual, 2)
+		So(news[0], ShouldEqual, "go")
+		So(news[1], ShouldEqual, "build")
+
+		news = Args([]string{"go", "build", "-ldflags='-w'", "-gcflags='-N -l'"}).RemoveLdflags()
+		So(len(news), ShouldEqual, 3)
+		So(news[0], ShouldEqual, "go")
+		So(news[1], ShouldEqual, "build")
+		So(news[2], ShouldEqual, "-gcflags='-N -l'")
+
+		news = Args([]string{"go", "build", "-ldflags", "'-w'", "-gcflags='-N -l'"}).RemoveLdflags()
+		So(len(news), ShouldEqual, 3)
+		So(news[0], ShouldEqual, "go")
+		So(news[1], ShouldEqual, "build")
+		So(news[2], ShouldEqual, "-gcflags='-N -l'")
+	})
+}
+
+func TestTrimQuotationMarks(t *testing.T) {
+	Convey("去除前后单/双引号", t, func() {
+		So(TrimQuotationMarks(`'-w'`), ShouldEqual, "-w")
+		So(TrimQuotationMarks(`"-N -l"`), ShouldEqual, "-N -l")
+		So(TrimQuotationMarks(`something`), ShouldEqual, "something")
+
+		So(TrimQuotationMarks(`'-w"`), ShouldEqual, "'-w")
+		So(TrimQuotationMarks(`"-w'`), ShouldEqual, "\"-w")
+	})
+}

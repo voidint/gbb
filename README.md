@@ -291,6 +291,7 @@ commit: db8b606cfc2b24a24e2e09acac24a52c47b68401
 ## changelog
 ### 0.5.0 - 
 - Fixbug: gbb.json中的`version`值不满足`xx.xx.xx`格式情况下，提示语的末尾出现意外的`%`。[#20](https://github.com/voidint/gbb/issues/20)
+- Add feature: 支持合并`-ldflags`选项的值。[#23](https://github.com/voidint/gbb/issues/23)
 
 ### 0.4.0 - 2017/04/08
 - 支持编译当前目录下所有go package，不再仅限于编译main package。[#10](https://github.com/voidint/gbb/issues/10)
