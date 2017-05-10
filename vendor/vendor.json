@@ -27,6 +27,12 @@
 			"revisionTime": "2016-12-28T00:43:38Z"
 		},
 		{
+			"checksumSHA1": "LAYoNzXqCh8gzQiaE9Re6tJCNAU=",
+			"path": "github.com/lmika/shellwords",
+			"revision": "ce258dd729fe9965ab11b0200b9db427ec9fa49d",
+			"revisionTime": "2014-07-14T11:40:18Z"
+		},
+		{
 			"checksumSHA1": "ynJSWoF6v+3zMnh9R0QmmG6iGV8=",
 			"path": "github.com/pkg/errors",
 			"revision": "248dadf4e9068a0b3e79f02ed0a610d935de5302",
