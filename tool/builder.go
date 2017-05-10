@@ -7,6 +7,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/lmika/shellwords"
 	"github.com/voidint/gbb/config"
 	"github.com/voidint/gbb/variable"
 )
@@ -52,7 +53,7 @@ func chdir(dir string, debug bool) (err error) {
 func ldflags(conf *config.Config) (flags string, err error) {
 	var buf bytes.Buffer
 
-	if val := Args(strings.Fields(conf.Tool)).ExtractLdflags(); val != "" {
+	if val := Args(shellwords.Split(conf.Tool)).ExtractLdflags(); val != "" {
 		buf.WriteString(val)
 		buf.WriteByte(' ')
 	}

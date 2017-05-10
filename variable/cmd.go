@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"os/exec"
 	"strings"
+
+	"github.com/lmika/shellwords"
 )
 
 // CmdVar 命令变量
@@ -32,7 +34,7 @@ func (v *CmdVar) Eval(expr string, debug bool) (val string, err error) {
 }
 
 func (v *CmdVar) exec(nameAndArgs string) (output []byte, err error) {
-	fields := strings.Fields(nameAndArgs)
+	fields := shellwords.Split(nameAndArgs)
 	var cmd *exec.Cmd
 	if len(fields) == 1 {
 		cmd = exec.Command(fields[0])

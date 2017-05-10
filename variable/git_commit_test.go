@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/bouk/monkey"
+	"github.com/lmika/shellwords"
 	. "github.com/smartystreets/goconvey/convey"
 )
 
@@ -70,10 +71,10 @@ func TestGitCommitVarEval(t *testing.T) {
 		})
 
 		Convey("panic", func() {
-			monkey.Patch(strings.Fields, func(s string) []string {
+			monkey.Patch(shellwords.Split, func(s string) []string {
 				return []string{}
 			})
-			defer monkey.Unpatch(strings.Fields)
+			defer monkey.Unpatch(shellwords.Split)
 			So(func() {
 				_, _ = DefaultGitCommitVar.Eval("", true)
 			}, ShouldPanicWith, "unreachable")

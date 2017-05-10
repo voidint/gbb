@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"os/exec"
 	"strings"
+
+	"github.com/lmika/shellwords"
 )
 
 const (
@@ -51,7 +53,7 @@ func (v *GitCommitVar) Match(expr string) (matched bool) {
 
 func (v *GitCommitVar) headCommit(debug bool) (commit string, err error) {
 	var cmd *exec.Cmd
-	cmdAndArgs := strings.Fields(v.cmd)
+	cmdAndArgs := shellwords.Split(v.cmd)
 	if len(cmdAndArgs) == 1 {
 		cmd = exec.Command(cmdAndArgs[0])
 	} else if len(cmdAndArgs) >= 2 {

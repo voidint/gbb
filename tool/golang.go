@@ -10,6 +10,7 @@ import (
 	"runtime"
 	"strings"
 
+	"github.com/lmika/shellwords"
 	"github.com/voidint/gbb/config"
 )
 
@@ -45,7 +46,7 @@ func (b *GoBuilder) buildDir(dir string) error {
 		return err
 	}
 
-	cmdArgs := strings.Fields(b.conf.Tool) // go install ==> []string{"go", "install"}
+	cmdArgs := shellwords.Split(b.conf.Tool) // go install ==> []string{"go", "install"}
 
 	mainPkg, err := isMainPkg(dir)
 	if err != nil {

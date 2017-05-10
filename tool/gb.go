@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
-	"strings"
 
+	"github.com/lmika/shellwords"
 	"github.com/voidint/gbb/config"
 )
 
@@ -32,7 +32,7 @@ func (b *GBBuilder) buildDir(dir string) error {
 		return err
 	}
 
-	cmdArgs := strings.Fields(b.conf.Tool) // go install ==> []string{"go", "install"}
+	cmdArgs := shellwords.Split(b.conf.Tool) // go install ==> []string{"go", "install"}
 
 	flags, err := ldflags(b.conf)
 	if err != nil {
