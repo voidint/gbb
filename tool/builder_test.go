@@ -1,6 +1,7 @@
 package tool
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"os/exec"
@@ -8,10 +9,12 @@ import (
 	"reflect"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/bouk/monkey"
 	. "github.com/smartystreets/goconvey/convey"
 	"github.com/voidint/gbb/config"
+	"github.com/voidint/gbb/variable"
 )
 
 func initDir() {
@@ -125,6 +128,74 @@ func TestChdir(t *testing.T) {
 				So(chdir(wd[:idx], true), ShouldBeNil)
 			}
 		})
+
+		Convey("目录切换发生错误", func() {
+			var ErrChdir = errors.New("chdir error")
+			monkey.Patch(os.Getwd, func() (dir string, err error) {
+				return "", ErrChdir
+			})
+			defer monkey.Unpatch(os.Getwd)
+			So(chdir("../", true), ShouldEqual, ErrChdir)
+		})
+	})
+}
+
+func TestLdflags(t *testing.T) {
+	Convey("根据配置返回-ldflags选项值", t, func() {
+		Convey("从Tool中获取-ldflags选项值", func() {
+			conf := new(config.Config)
+			var flags string
+			var err error
+
+			conf.Tool = "go install"
+			flags, err = ldflags(conf)
+			So(err, ShouldBeNil)
+			So(flags, ShouldBeEmpty)
+
+			conf.Tool = "go install -ldflags='-w'"
+			flags, err = ldflags(conf)
+			So(err, ShouldBeNil)
+			So(flags, ShouldEqual, "-w")
+		})
+
+		Convey("从变量中获取-ldflags选项值", func() {
+			now := time.Unix(12345, 0)
+			monkey.Patch(time.Now, func() time.Time {
+				return now
+			})
+
+			var commitVar *variable.GitCommitVar
+			hash := "abcdef12345"
+			monkey.PatchInstanceMethod(reflect.TypeOf(commitVar), "Eval", func(_ *variable.GitCommitVar, _ string, debug bool) (val string, err error) {
+				return hash, nil
+			})
+			defer monkey.UnpatchAll()
+
+			conf := new(config.Config)
+			var flags string
+			var err error
+
+			conf.Importpath = "github.com/voidint/gbb/build"
+			conf.Variables = []config.Variable{
+				{
+					Variable: "Date",
+					Value:    "{{.Date}}",
+				},
+				{
+					Variable: "Commit",
+					Value:    "{{.GitCommit}}",
+				},
+			}
+
+			flags, err = ldflags(conf)
+			So(err, ShouldBeNil)
+			So(flags, ShouldEqual, fmt.Sprintf("-X %q -X %q",
+				fmt.Sprintf("%s.Date=%s", conf.Importpath, now.Format(time.RFC3339)),
+				fmt.Sprintf("%s.Commit=%s", conf.Importpath, hash),
+			))
+
+		})
+
 	})
 }
 
@@ -151,6 +222,7 @@ func TestExtractLdflags(t *testing.T) {
 			})
 			Convey("选项与值之间使用空格分隔", func() {
 				So(Args([]string{"go", "build", "-ldflags", "\"-w\""}).ExtractLdflags(), ShouldEqual, "-w")
+				So(Args([]string{"go", "build", "-ldflags"}).ExtractLdflags(), ShouldBeEmpty)
 			})
 			Convey("值放置在两个单引号内", func() {
 				So(Args([]string{"go", "build", "-ldflags", "'-w'"}).ExtractLdflags(), ShouldEqual, "-w")

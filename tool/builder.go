@@ -77,7 +77,7 @@ func ldflags(conf *config.Config) (flags string, err error) {
 			buf.WriteByte(' ')
 		}
 	}
-	return buf.String(), nil
+	return strings.TrimSpace(buf.String()), nil
 }
 
 // Args 命令行参数
