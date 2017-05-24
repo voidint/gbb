@@ -3,6 +3,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
+	"os"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -25,12 +26,16 @@ func init() {
 func genConfigFile(destFilename string) {
 	c := gather()
 
-	b, _ := json.MarshalIndent(c, "", "    ")
-	fmt.Printf("About to write to %s:\n\n%s\n\nIs this ok?[y/n] ", destFilename, string(b))
+	fmt.Printf("About to write to %s:\n\n", destFilename)
+	enc := json.NewEncoder(os.Stdout)
+	enc.SetIndent("", "    ")
+	enc.Encode(c)
+	fmt.Printf("\nIs this ok?[y/n] ")
+
 	var ok string
 	fmt.Scanln(&ok)
 	if ok = strings.ToLower(ok); ok == "y" {
-		config.Save(c, confFile)
+		config.Save(c, destFilename)
 	}
 }
 
