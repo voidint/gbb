@@ -39,10 +39,10 @@
 			"revisionTime": "2016-10-29T09:36:37Z"
 		},
 		{
-			"checksumSHA1": "RPVh5/wbvFG0q0CWHXifXpkYTDg=",
+			"checksumSHA1": "nSpZi42fNKt0atsgnUIUMouoM6U=",
 			"path": "github.com/smartystreets/assertions",
-			"revision": "26acb9229f421449ac63d014995b282d59261a8b",
-			"revisionTime": "2016-12-13T22:48:10Z"
+			"revision": "9c0ea8acbc1d8ad689f9e6fe0c1fa5838e0cabc2",
+			"revisionTime": "2017-08-18T22:00:48Z"
 		},
 		{
 			"checksumSHA1": "Vzb+dEH/LTYbvr8RXHmt6xJHz04=",
@@ -59,8 +59,8 @@
 		{
 			"checksumSHA1": "egeG/afVkrtqk62j86WS7ATVAbI=",
 			"path": "github.com/smartystreets/goconvey",
-			"revision": "3bd662eac601ad6436e64776af2e112069eb2edc",
-			"revisionTime": "2017-01-10T12:00:22Z"
+			"revision": "e5b2b7c9111590d019a696c7800593f666e1a7f4",
+			"revisionTime": "2017-08-25T22:14:26Z"
 		},
 		{
 			"checksumSHA1": "f4m09DHEetaanti/GqUJzyCBTaI=",
