@@ -3,12 +3,10 @@ package config
 import (
 	"encoding/json"
 	"errors"
-	"testing"
-
+	"io/ioutil"
 	"os"
 	"path/filepath"
-
-	"io/ioutil"
+	"testing"
 
 	"github.com/bouk/monkey"
 	. "github.com/smartystreets/goconvey/convey"

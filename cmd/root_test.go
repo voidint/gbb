@@ -56,7 +56,8 @@ func TestRootCmd(t *testing.T) {
 			monkey.Patch(util.FileExist, func(filename string) bool {
 				return false
 			})
-			monkey.Patch(genConfigFile, func(_ string) {
+			monkey.Patch(genConfigFile, func(_ string) error {
+				return nil
 			})
 			defer monkey.UnpatchAll()
 
@@ -89,7 +90,8 @@ func TestRootCmd(t *testing.T) {
 						Version: "0.0.0",
 					}, nil
 				})
-				monkey.Patch(genConfigFile, func(_ string) {
+				monkey.Patch(genConfigFile, func(_ string) error {
+					return nil
 				})
 				monkey.Patch(tool.Build, func(_ *config.Config, _ string) (err error) {
 					return nil

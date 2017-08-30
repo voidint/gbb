@@ -8,11 +8,12 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/voidint/gbb/config"
+	"github.com/voidint/gbb/util"
 )
 
 var initCmd = &cobra.Command{
 	Use:   "init",
-	Short: "Help you to creating gbb.json step by step.",
+	Short: `Help you to creating "gbb.json" step by step.`,
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
 		genConfigFile(confFile)
@@ -23,36 +24,37 @@ func init() {
 	RootCmd.AddCommand(initCmd)
 }
 
-func genConfigFile(destFilename string) {
+func genConfigFile(destFilename string) (err error) {
 	c := gather()
 
 	fmt.Printf("About to write to %s:\n\n", destFilename)
 	enc := json.NewEncoder(os.Stdout)
 	enc.SetIndent("", "    ")
-	enc.Encode(c)
+	if err = enc.Encode(c); err != nil {
+		return err
+	}
 	fmt.Printf("\nIs this ok?[y/n] ")
 
-	var ok string
-	fmt.Scanln(&ok)
-	if ok = strings.ToLower(ok); ok == "y" {
-		config.Save(c, destFilename)
+	if ok, _ := util.Scanln(); strings.ToLower(ok) == "y" {
+		return config.Save(c, destFilename)
 	}
+	return nil
 }
 
 func gather() (c *config.Config) {
-	fmt.Println(`This utility will walk you through creating a gbb.json file.
-It only covers the most common items, and tries to guess sensible defaults.`)
-	fmt.Printf("\nPress ^C at any time to quit.\n")
+	fmt.Printf(`This utility will walk you through creating a gbb.json file.
+It only covers the most common items, and tries to guess sensible defaults.
+
+Press ^C at any time to quit.
+`)
 
 	c = new(config.Config)
 	// required
 	c.Version = Version
-	c.Tool = gatherOne("tool", "go_install")
+	c.Tool = gatherOne("tool", "go install")
 
-	var sContinue string
 	fmt.Print("Do you want to continue?[y/n] ")
-	fmt.Scanln(&sContinue)
-	if sContinue = strings.ToLower(sContinue); sContinue == "n" {
+	if sContinue, _ := util.Scanln(); strings.ToLower(sContinue) == "n" {
 		return c
 	}
 
@@ -62,8 +64,7 @@ It only covers the most common items, and tries to guess sensible defaults.`)
 		c.Variables = append(c.Variables, *gatherOneVar())
 
 		fmt.Print("Do you want to continue?[y/n] ")
-		fmt.Scanln(&sContinue)
-		if sContinue = strings.ToLower(sContinue); sContinue == "n" {
+		if sContinue, _ := util.Scanln(); strings.ToLower(sContinue) == "n" {
 			break
 		}
 	}
@@ -84,13 +85,12 @@ func gatherOne(prompt, defaultVal string) (input string) {
 		} else {
 			fmt.Printf("%s: ", prompt)
 		}
-		fmt.Scanln(&input) // TODO bug: 无法获取到包含空格的全部输入，如go build
-		if input = strings.TrimSpace(input); input == "" {
+		if input, _ = util.Scanln(); input == "" {
 			if defaultVal == "" {
 				continue
 			}
-			return strings.Replace(defaultVal, "_", " ", -1)
+			return defaultVal
 		}
-		return strings.Replace(input, "_", " ", -1) // TODO 临时举措，还原实际的空格。如，go_build ==> go build
+		return input
 	}
 }
