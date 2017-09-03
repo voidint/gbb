@@ -289,7 +289,7 @@ commit: db8b606cfc2b24a24e2e09acac24a52c47b68401
 	
 	
 ## changelog
-### 0.5.0 - 2017/09/10
+### 0.5.0 - 2017/09/03
 - Add feature: 支持合并`-ldflags`选项的值。[#23](https://github.com/voidint/gbb/issues/23)
 - Fixbug: gbb.json中的`version`值不满足`xx.xx.xx`格式情况下，提示语的末尾出现意外的`%`。[#20](https://github.com/voidint/gbb/issues/20)
 - Fixbug: 若gbb.json的tool属性值中包含空格，则无法正常编译。[#24](https://github.com/voidint/gbb/issues/24)
