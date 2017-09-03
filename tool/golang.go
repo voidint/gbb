@@ -20,14 +20,18 @@ type GoBuilder struct {
 }
 
 // NewGoBuilder 返回go内置编译工具实例
-func NewGoBuilder(conf *config.Config) *GoBuilder {
+func NewGoBuilder(conf config.Config) *GoBuilder {
 	return &GoBuilder{
-		conf: conf,
+		conf: &conf,
 	}
 }
 
 // Build 切换到指定工作目录后调用编译工具编译。
-func (b *GoBuilder) Build(rootDir string) error {
+func (b *GoBuilder) Build(rootDir string) (err error) {
+	if err = setupConfig(b.conf); err != nil {
+		return err
+	}
+
 	paths, err := walkPkgs(rootDir)
 	if err != nil {
 		return err
@@ -46,28 +50,13 @@ func (b *GoBuilder) buildDir(dir string) error {
 		return err
 	}
 
-	cmdArgs := shellwords.Split(b.conf.Tool) // go install ==> []string{"go", "install"}
-
-	mainPkg, err := isMainPkg(dir)
-	if err != nil {
-		return err
-	}
-	if mainPkg {
-		flags, err := ldflags(b.conf)
-		if err != nil {
-			return err
-		}
-		if flags != "" {
-			cmdArgs = Args(cmdArgs).RemoveLdflags()
-			cmdArgs = append(cmdArgs, "-ldflags", flags)
-		}
-	}
+	cmdArgs := shellwords.Split(b.conf.Tool)
 
 	if b.conf.Debug {
 		fmt.Print("==> ", cmdArgs[0])
 		args := cmdArgs[1:]
 		for i := range args {
-			if i-1 > 0 && args[i-1] == "-ldflags" {
+			if strings.Contains(args[i], " ") {
 				fmt.Printf(" '%s'", args[i])
 			} else {
 				fmt.Printf(" %s", args[i])
@@ -118,17 +107,4 @@ func isGoPkg(path string) (yes bool, err error) {
 		return false, err
 	}
 	return len(pkgs) > 0, nil
-}
-
-func isMainPkg(path string) (yes bool, err error) {
-	if path == "" {
-		return false, nil
-	}
-	fset := token.NewFileSet()
-	pkgs, err := parser.ParseDir(fset, path, nil, 0)
-	if err != nil {
-		return false, err
-	}
-	_, yes = pkgs["main"]
-	return yes, nil
 }

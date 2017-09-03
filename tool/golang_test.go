@@ -15,7 +15,7 @@ import (
 )
 
 func TestBuildDir4Golang(t *testing.T) {
-	builder := NewGoBuilder(&config.Config{
+	builder := NewGoBuilder(config.Config{
 		Tool:       "go build -ldflags='-w'",
 		Importpath: "github.com/voidint/gbb/build",
 		Debug:      true,
@@ -25,10 +25,6 @@ func TestBuildDir4Golang(t *testing.T) {
 		dir, err := os.Getwd()
 		So(err, ShouldBeNil)
 		So(dir, ShouldNotBeEmpty)
-
-		monkey.Patch(isMainPkg, func(path string) (yes bool, err error) {
-			return true, nil
-		})
 
 		var cmd *exec.Cmd
 		monkey.PatchInstanceMethod(reflect.TypeOf(cmd), "Run", func(_ *exec.Cmd) error {
@@ -134,65 +130,6 @@ func TestIsGoPkg(t *testing.T) {
 			Convey("路径不存在", func() {
 				yes, err := isGoPkg(filepath.Join(wd, "not_exist_dir"))
 				So(err, ShouldNotBeNil)
-				So(yes, ShouldBeFalse)
-			})
-		})
-	})
-}
-
-func TestIsMainPkg(t *testing.T) {
-	Convey("检查指定路径是否是main包", t, func() {
-		wd, err := os.Getwd()
-		So(err, ShouldBeNil)
-		So(wd, ShouldNotBeBlank)
-		So(strings.HasSuffix(wd, "tool"), ShouldBeTrue)
-
-		Convey("合法路径", func() {
-			Convey("非main包且不包含子包", func() {
-				yes, err := isMainPkg(wd)
-				So(err, ShouldBeNil)
-				So(yes, ShouldBeFalse)
-			})
-			Convey("非main包且包含子包", func() {
-				path := filepath.Join(
-					strings.TrimRight(wd, "tool"),
-					"vendor", "github.com", "smartystreets", "assertions",
-				)
-				yes, err := isMainPkg(path)
-				So(err, ShouldBeNil)
-				So(yes, ShouldBeFalse)
-			})
-
-			Convey("main包", func() {
-				yes, err := isMainPkg(strings.TrimRight(wd, "tool"))
-				So(err, ShouldBeNil)
-				So(yes, ShouldBeTrue)
-			})
-		})
-
-		Convey("非法路径", func() {
-			Convey("路径为空", func() {
-				yes, err := isMainPkg("")
-				So(err, ShouldBeNil)
-				So(yes, ShouldBeFalse)
-			})
-			Convey("路径非目录", func() {
-				yes, err := isMainPkg(filepath.Join(wd, "golang_test.go"))
-				So(err, ShouldNotBeNil)
-				So(yes, ShouldBeFalse)
-			})
-			Convey("路径不存在", func() {
-				yes, err := isMainPkg(filepath.Join(wd, "not_exist_dir"))
-				So(err, ShouldNotBeNil)
-				So(yes, ShouldBeFalse)
-			})
-			Convey("路径下不包含go源文件(非包路径)", func() {
-				path := filepath.Join(
-					strings.TrimRight(wd, "tool"),
-					"vendor", "github.com",
-				)
-				yes, err := isMainPkg(path)
-				So(err, ShouldBeNil)
 				So(yes, ShouldBeFalse)
 			})
 		})

@@ -12,8 +12,13 @@ import (
 	"github.com/voidint/gbb/variable"
 )
 
+const (
+	ldflagsOPT = "-ldflags"
+)
+
 // Builder 编译工具
 type Builder interface {
+	// Build 编译指定目录下的go源码
 	Build(dir string) error
 }
 
@@ -28,9 +33,9 @@ func Build(conf *config.Config, dir string) (err error) {
 	defer chdir(dir, conf.Debug) // init work directory
 
 	if strings.HasPrefix(conf.Tool, "go ") {
-		return NewGoBuilder(conf).Build(dir)
+		return NewGoBuilder(*conf).Build(dir)
 	} else if strings.HasPrefix(conf.Tool, "gb ") {
-		return NewGBBuilder(conf).Build(dir)
+		return NewGBBuilder(*conf).Build(dir)
 	}
 	return ErrBuildTool
 }
@@ -50,93 +55,65 @@ func chdir(dir string, debug bool) (err error) {
 	return os.Chdir(dir)
 }
 
-func ldflags(conf *config.Config) (flags string, err error) {
-	var buf bytes.Buffer
-
-	if val := Args(shellwords.Split(conf.Tool)).ExtractLdflags(); val != "" {
-		buf.WriteString(val)
-		buf.WriteByte(' ')
+func setupConfig(conf *config.Config) (err error) {
+	if err = setupVars(conf); err != nil {
+		return err
 	}
+	return setupTool(conf)
+}
 
+// setupVars 若定义了变量，则将变量求值后将值重置到Variable的Value属性中。
+func setupVars(conf *config.Config) (err error) {
 	for i := range conf.Variables {
-		varName := strings.TrimSpace(conf.Variables[i].Variable)
-		varExpr := strings.TrimSpace(conf.Variables[i].Value)
-
 		if conf.Debug {
-			fmt.Printf("==> eval(%q)\n", varExpr)
+			fmt.Printf("==> eval(%q)\n", conf.Variables[i].Value)
 		}
-		val, err := variable.Eval(varExpr, conf.Debug)
+		conf.Variables[i].Value, err = variable.Eval(conf.Variables[i].Value, conf.Debug)
 		if err != nil {
-			return "", err
+			return err
 		}
 		if conf.Debug {
-			fmt.Println(val)
+			fmt.Println(conf.Variables[i].Value)
 		}
-		buf.WriteString(fmt.Sprintf(`-X "%s.%s=%s"`, conf.Importpath, varName, val))
+	}
+	return nil
+}
+
+// setupTool 若定义了变量，则将变量作为ldflags选项的值追加到tool内容中。
+// 变量求值应该在调用本函数前完成。
+func setupTool(conf *config.Config) (err error) {
+	var buf bytes.Buffer
+	for i := range conf.Variables {
+		buf.WriteString(fmt.Sprintf(`-X "%s.%s=%s"`, conf.Importpath, conf.Variables[i].Variable, conf.Variables[i].Value))
 		if i < len(conf.Variables)-1 {
 			buf.WriteByte(' ')
 		}
 	}
-	return strings.TrimSpace(buf.String()), nil
-}
-
-// Args 命令行参数
-type Args []string
-
-// ExtractLdflags 抽取参数中ldflags所对应的值
-func (args Args) ExtractLdflags() string {
-	for i, arg := range args {
-		if !strings.Contains(arg, "-ldflags") {
-			continue
-		}
-		// eg. go build -ldflags='-w'
-		idx := strings.Index(arg, "-ldflags=")
-		if idx > -1 {
-			return TrimQuotationMarks(arg[idx+len("-ldflags="):])
-		}
-		if i >= len(args)-1 || !strings.HasSuffix(arg, "-ldflags") {
-			return ""
-		}
-		// eg. go build -ldflags "-w"
-		return TrimQuotationMarks(args[i+1])
+	ldflags := buf.String()
+	if ldflags == "" {
+		return nil
 	}
-	return ""
-}
 
-// RemoveLdflags 移除ldflags参数及其值
-func (args Args) RemoveLdflags() (news Args) {
-	for i := range args {
-		if !strings.Contains(args[i], "-ldflags") {
-			continue
-		}
-		// eg. go build -ldflags='-w'
-		if strings.Contains(args[i], "-ldflags=") {
-			args[i] = ""
-			continue
-		}
-		// eg. go build -ldflags "-w"
-		if i < len(args)-1 && strings.HasSuffix(args[i], "-ldflags") {
-			args[i] = ""
-			args[i+1] = ""
-			continue
+	if !strings.Contains(conf.Tool, ldflagsOPT) {
+		conf.Tool = fmt.Sprintf("%s %s '%s'", conf.Tool, ldflagsOPT, ldflags) // 直接增加-ldflags选项及其值
+		return nil
+	}
+
+	cmdArgs := shellwords.Split(strings.Replace(conf.Tool, "=", " ", -1))
+	for i := range cmdArgs {
+		if cmdArgs[i] == ldflagsOPT && i < len(cmdArgs)-1 {
+			// 将计算获得的ldflags选项值追加到原-ldflags选项值内容后
+			cmdArgs[i+1] = fmt.Sprintf("%s %s", cmdArgs[i+1], ldflags)
+			break
 		}
 	}
 
-	for i := range args {
-		if args[i] == "" {
-			continue
+	for i := range cmdArgs {
+		if strings.Contains(cmdArgs[i], " ") {
+			cmdArgs[i] = fmt.Sprintf("'%s'", cmdArgs[i])
 		}
-		news = append(news, args[i])
 	}
-	return news
-}
 
-// TrimQuotationMarks 去除字符串前后的单/双引号
-func TrimQuotationMarks(val string) string {
-	if strings.HasSuffix(val, `'`) {
-		return strings.TrimPrefix(strings.TrimSuffix(val, `'`), `'`)
-	} else if strings.HasSuffix(val, `"`) {
-		return strings.TrimPrefix(strings.TrimSuffix(val, `"`), `"`)
-	}
-	return val
+	conf.Tool = strings.Join(cmdArgs, " ")
+	return nil
 }

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strings"
 
 	"github.com/lmika/shellwords"
 	"github.com/voidint/gbb/config"
@@ -15,14 +16,17 @@ type GBBuilder struct {
 }
 
 // NewGBBuilder 返回gb编译工具实例
-func NewGBBuilder(conf *config.Config) *GBBuilder {
+func NewGBBuilder(conf config.Config) *GBBuilder {
 	return &GBBuilder{
-		conf: conf,
+		conf: &conf,
 	}
 }
 
 // Build 切换到指定工作目录后调用编译工具编译。
-func (b *GBBuilder) Build(rootDir string) error {
+func (b *GBBuilder) Build(rootDir string) (err error) {
+	if err = setupConfig(b.conf); err != nil {
+		return err
+	}
 	return b.buildDir(rootDir)
 }
 
@@ -32,22 +36,13 @@ func (b *GBBuilder) buildDir(dir string) error {
 		return err
 	}
 
-	cmdArgs := shellwords.Split(b.conf.Tool) // go install ==> []string{"go", "install"}
-
-	flags, err := ldflags(b.conf)
-	if err != nil {
-		return err
-	}
-	if flags != "" {
-		cmdArgs = Args(cmdArgs).RemoveLdflags()
-		cmdArgs = append(cmdArgs, "-ldflags", flags)
-	}
+	cmdArgs := shellwords.Split(b.conf.Tool)
 
 	if b.conf.Debug {
 		fmt.Print("==> ", cmdArgs[0])
 		args := cmdArgs[1:]
 		for i := range args {
-			if i-1 > 0 && args[i-1] == "-ldflags" {
+			if strings.Contains(args[i], " ") {
 				fmt.Printf(" '%s'", args[i])
 			} else {
 				fmt.Printf(" %s", args[i])

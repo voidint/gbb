@@ -77,9 +77,9 @@ commit: db8b606cfc2b24a24e2e09acac24a52c47b68401
 ## 特性
 根据以上的场景描述，可以简单地将主要特性归纳为如下几条：
 
-- 一键编译当前目录下所有go package。
-- 支持编译时自动“嵌入”信息到二进制可执行文件，典型的如嵌入`编译时间`和源代码`Commit`信息到二进制可执行文件的版本信息当中。
-- 首次运行会在项目根目录自动生成`gbb.json`配置文件，今后编译操作所需的信息都从此文件读取，不再打扰用户，做安静美男子。
+- 一键编译项目目录下所有`go package`。
+- 支持编译时自动“嵌入”信息到二进制可执行文件。典型的如嵌入`编译时间`和源代码`Commit`信息到二进制可执行文件的版本信息当中。
+- 首次运行会在项目根目录生成配置文件`gbb.json`，今后编译操作所需的信息都从该文件读取，无需用户干预。
 
 ## 安装
 1. 拉取源代码
@@ -87,12 +87,12 @@ commit: db8b606cfc2b24a24e2e09acac24a52c47b68401
 	``` shell
 	$ go get -u -v github.com/voidint/gbb
 	```
-1. 编译（默认情况下`go get`就会编译）
+1. 编译（默认情况下`go get`就会编译安装）
 
 	```
 	$ cd $GOPATH/src/github.com/voidint/gbb && go install
 	```
-1. 将可执行文件`gbb`放置到环境变量`PATH`
+1. 将可执行文件`gbb`放置到`PATH`环境变量内
 1. 执行`which gbb`确认是否安装成功
 1. 若`gbb`重名，那么建议设置别名，比如`alias gbb=gbb2`。
 
@@ -127,7 +127,7 @@ $ rm -f gbb.json
 如果对“嵌入”编译时间、Commit这类信息到二进制可执行文件中有一定兴趣，那么建议从头至尾通读一遍吧。
 
 ### step0
-为了在版本信息中显示`编译时间`和`commit号`这两个关键信息（并不限于这两个信息），需要先定义两个变量（变量不需要赋初值）。
+为了在版本信息中显示`编译时间`和`commit号`这两个关键信息（并不限于这两个信息），需要先定义两个可导出变量。
 
 ```
 package build
@@ -185,7 +185,7 @@ This utility will walk you through creating a gbb.json file.
 It only covers the most common items, and tries to guess sensible defaults.
 
 Press ^C at any time to quit.
-tool: (go_install) go_build
+tool: (go install) go build
 Do you want to continue?[y/n] n
 About to write to /Users/voidint/cloud/workspace/go/lib/src/github.com/voidint/gbb/gbb.json:
 
@@ -205,7 +205,7 @@ This utility will walk you through creating a gbb.json file.
 It only covers the most common items, and tries to guess sensible defaults.
 
 Press ^C at any time to quit.
-tool: (go_install) go_build
+tool: (go install) go build
 Do you want to continue?[y/n] y
 importpath: (main) github.com/voidint/gbb/build
 variable: Date
@@ -238,13 +238,13 @@ Is this ok?[y/n] y
 
 
 ### step2
-在项目根目录执行`gbb --debug`，就会按照同级目录下`gbb.json`中配置执行编译操作。若`gbb.json`文件不存在，`gbb init`会被自动调用。
+在项目根目录执行`gbb --debug`，`gbb`会读取当前目录下的`gbb.json`并执行编译。若`gbb.json`文件不存在，则`gbb init`会被自动调用，以用于创建该文件。
 
 ```
 $ gbb --debug
 ==> go build -ldflags  '-X "github.com/voidint/gbb/build.Date=2016-12-17T22:18:32+08:00" -X "github.com/voidint/gbb/build.Commit=db8b606cfc2b24a24e2e09acac24a52c47b68401"'
 ```
-编译完后在目录下多出一个编译后的二进制文件。试着输出版本信息，看看是否实现我们设定的目标了。
+编译完后在目录下（由于`gbb.json`中的`tool`配置的是`go build`，若换成`go install`，那可执行文件将被放置在`GOPATH`的`bin`目录下）多出一个编译后的二进制文件。试着输出版本信息，看看是否实现我们设定的目标了。
 
 ```
 $ ./gbb version
@@ -259,8 +259,8 @@ commit: db8b606cfc2b24a24e2e09acac24a52c47b68401
 
 ``` json
 {
-    "version": "0.4.0",
-    "tool": "go build",
+    "version": "0.5.0",
+    "tool": "go build  -ldflags='-s -w' -gcflags='-N -l'",
     "importpath": "github.com/voidint/gbb/build",
     "variables": [
         {
@@ -276,7 +276,7 @@ commit: db8b606cfc2b24a24e2e09acac24a52c47b68401
 ```
 
 - `version`: 版本号。gbb根据自身版本号自动写入gbb.json。
-- `tool`: gbb实际调用的编译工具。可选值包括：`go_build`、`go_install`、`gb_build`。注意：这个值不能包含空格[issue](https://github.com/voidint/gbb/issues/1)，因此暂时通过下划线`_`连接。
+- `tool`: gbb实际所调用的编译工具，支持附带编译工具的编译选项。已支持编译工具包括：`go build`、`go install`、`gb build`。
 - `importpath`: 包导入路径，也就是`Date`、`Commit`这类变量所在包的导入路径，如`github.com/voidint/gbb/build`。
 - `variables`: 变量列表。列表中的每个元素都包含`variable`和`value`两个属性。
 	- `variable`变量名，比如`Date`。
@@ -289,10 +289,12 @@ commit: db8b606cfc2b24a24e2e09acac24a52c47b68401
 	
 	
 ## changelog
-### 0.5.0 - 
+### 0.5.0 - 2017/09/10
 - Add feature: 支持合并`-ldflags`选项的值。[#23](https://github.com/voidint/gbb/issues/23)
 - Fixbug: gbb.json中的`version`值不满足`xx.xx.xx`格式情况下，提示语的末尾出现意外的`%`。[#20](https://github.com/voidint/gbb/issues/20)
 - Fixbug: 若gbb.json的tool属性值中包含空格，则无法正常编译。[#24](https://github.com/voidint/gbb/issues/24)
+- Fixbug: gbb init无法获取键盘输入的空格内容。[#1](https://github.com/voidint/gbb/issues/1)
+- 提升单元测试用例覆盖率
 
 ### 0.4.0 - 2017/04/08
 - 支持编译当前目录下所有go package，不再仅限于编译main package。[#10](https://github.com/voidint/gbb/issues/10)
