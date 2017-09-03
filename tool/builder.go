@@ -59,7 +59,8 @@ func setupConfig(conf *config.Config) (err error) {
 	if err = setupVars(conf); err != nil {
 		return err
 	}
-	return setupTool(conf)
+	setupTool(conf)
+	return nil
 }
 
 // setupVars 若定义了变量，则将变量求值后将值重置到Variable的Value属性中。
@@ -81,7 +82,7 @@ func setupVars(conf *config.Config) (err error) {
 
 // setupTool 若定义了变量，则将变量作为ldflags选项的值追加到tool内容中。
 // 变量求值应该在调用本函数前完成。
-func setupTool(conf *config.Config) (err error) {
+func setupTool(conf *config.Config) {
 	var buf bytes.Buffer
 	for i := range conf.Variables {
 		buf.WriteString(fmt.Sprintf(`-X "%s.%s=%s"`, conf.Importpath, conf.Variables[i].Variable, conf.Variables[i].Value))
@@ -91,12 +92,12 @@ func setupTool(conf *config.Config) (err error) {
 	}
 	ldflags := buf.String()
 	if ldflags == "" {
-		return nil
+		return
 	}
 
 	if !strings.Contains(conf.Tool, ldflagsOPT) {
 		conf.Tool = fmt.Sprintf("%s %s '%s'", conf.Tool, ldflagsOPT, ldflags) // 直接增加-ldflags选项及其值
-		return nil
+		return
 	}
 
 	cmdArgs := shellwords.Split(strings.Replace(conf.Tool, "=", " ", -1))
@@ -115,5 +116,5 @@ func setupTool(conf *config.Config) (err error) {
 	}
 
 	conf.Tool = strings.Join(cmdArgs, " ")
-	return nil
+	return
 }
