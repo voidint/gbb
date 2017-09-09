@@ -56,7 +56,7 @@ func TestBuild(t *testing.T) {
 				c.Variables = []config.Variable{
 					{Variable: "Date", Value: "xxxx"},
 				}
-				err := Build(c, strings.TrimRight(wd, "tool"))
+				err := Build(c, strings.TrimSuffix(wd, "tool"))
 				So(err, ShouldNotBeNil)
 			})
 

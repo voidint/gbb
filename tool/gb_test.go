@@ -16,11 +16,11 @@ import (
 	"github.com/voidint/gbb/variable"
 )
 
-func TestBuild4Go(t *testing.T) {
-	Convey("调用go build编译", t, func() {
+func TestBuild4GB(t *testing.T) {
+	Convey("调用gb编译项目", t, func() {
 		Convey("变量求值出错", func() {
-			builder := NewGoBuilder(config.Config{
-				Tool:       "go build -ldflags='-w'",
+			builder := NewGBBuilder(config.Config{
+				Tool:       "gb build -ldflags='-w'",
 				Importpath: "github.com/voidint/gbb/build",
 				Variables: []config.Variable{
 					{Value: "wrong express"},
@@ -33,8 +33,8 @@ func TestBuild4Go(t *testing.T) {
 		})
 
 		Convey("切换目录出错", func() {
-			builder := NewGoBuilder(config.Config{
-				Tool:       "go build -ldflags='-w'",
+			builder := NewGBBuilder(config.Config{
+				Tool:       "gb build -ldflags='-w'",
 				Importpath: "github.com/voidint/gbb/build",
 				Variables: []config.Variable{
 					{Value: "{{.Date}}"},
@@ -53,38 +53,20 @@ func TestBuild4Go(t *testing.T) {
 			So(builder.Build(rootDir), ShouldEqual, ErrChdir)
 		})
 
-		Convey("遍历所有go package出错", func() {
-			var ErrWalk = errors.New("walk error")
-			monkey.Patch(util.WalkPkgsFunc, func(rootDir string, f util.FiltePkgFunc) (paths []string, err error) {
-				return nil, ErrWalk
-			})
-			defer monkey.Unpatch(util.WalkPkgsFunc)
-
-			builder := NewGoBuilder(config.Config{
-				Tool:       "go build -ldflags='-w'",
-				Importpath: "github.com/voidint/gbb/build",
-				Debug:      true,
-			})
-			wd, _ := os.Getwd()
-			rootDir := filepath.Clean(strings.TrimSuffix(wd, "tool"))
-			So(builder.Build(rootDir), ShouldEqual, ErrWalk)
-		})
-
-		Convey("遍历所有go package成功并执行go clean", func() {
-			var cmd *exec.Cmd
-			monkey.PatchInstanceMethod(reflect.TypeOf(cmd), "Run", func(_ *exec.Cmd) error {
-				return nil
-			})
-			defer monkey.UnpatchAll()
-
-			builder := NewGoBuilder(config.Config{
-				Tool:       "go build -ldflags='-w'",
+		Convey("编译成功", func() {
+			builder := NewGBBuilder(config.Config{
+				Tool:       "gb build -ldflags='-w'",
 				Importpath: "github.com/voidint/gbb/build",
 				Variables: []config.Variable{
 					{Value: "{{.Date}}"},
 				},
 				Debug: true,
 			})
+			var cmd *exec.Cmd
+			monkey.PatchInstanceMethod(reflect.TypeOf(cmd), "Run", func(_ *exec.Cmd) error {
+				return nil
+			})
+			defer monkey.UnpatchAll()
 
 			wd, _ := os.Getwd()
 			rootDir := filepath.Clean(strings.TrimSuffix(wd, "tool"))
