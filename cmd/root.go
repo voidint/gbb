@@ -12,14 +12,8 @@ import (
 )
 
 const (
-	// DefaultConfFile 默认配置文件路径（./gbb.json）
+	// DefaultConfFile default configuration file path
 	DefaultConfFile = "gbb.json"
-)
-
-var (
-	wd       string // 当前工作目录
-	confFile string // 配置文件路径
-	debug    bool   // 是否开启debug模式
 )
 
 // RootCmd represents the base command when called without any subcommands
@@ -29,20 +23,20 @@ var RootCmd = &cobra.Command{
 	Long:  ``,
 
 	Run: func(cmd *cobra.Command, args []string) {
-		if confFile == DefaultConfFile {
-			confFile = filepath.Join(wd, "gbb.json")
+		if gopts.ConfigFile == DefaultConfFile {
+			gopts.ConfigFile = filepath.Join(wd, "gbb.json")
 		}
 
-		if !util.FileExist(confFile) {
-			genConfigFile(confFile)
+		if !util.FileExist(gopts.ConfigFile) {
+			genConfigFile(gopts.ConfigFile)
 			return
 		}
-		conf, err := config.Load(confFile)
+		conf, err := config.Load(gopts.ConfigFile)
 		if err != nil {
 			fmt.Fprintln(os.Stderr, err.Error())
 			os.Exit(-1)
 		}
-		conf.Debug = debug
+		conf.Debug = gopts.Debug
 
 		if conf.Version != Version {
 			gt, err := util.VersionGreaterThan(Version, conf.Version)
@@ -53,7 +47,7 @@ var RootCmd = &cobra.Command{
 
 			if gt { // 程序版本大于配置文件版本，重新生成配置文件。
 				fmt.Printf("Warning: The gbb.json file needs to be upgraded.\n\n")
-				genConfigFile(confFile)
+				genConfigFile(gopts.ConfigFile)
 			} else {
 				// 配置文件版本大于程序版本，提醒用户升级程序。
 				fmt.Printf("Warning: This program needs to be upgraded by `go get -u -v github.com/voidint/gbb`\n\n")
@@ -77,10 +71,21 @@ func Execute() {
 	}
 }
 
+// GlobalOptions global options
+type GlobalOptions struct {
+	Debug      bool
+	ConfigFile string
+}
+
+var (
+	wd    string // current work directory
+	gopts GlobalOptions
+)
+
 func init() {
 	cobra.OnInitialize(initConfig)
-	RootCmd.PersistentFlags().BoolVar(&debug, "debug", false, "Enable debug mode")
-	RootCmd.PersistentFlags().StringVar(&confFile, "config", DefaultConfFile, "Configuration file")
+	RootCmd.PersistentFlags().BoolVar(&gopts.Debug, "debug", false, "Enable debug mode")
+	RootCmd.PersistentFlags().StringVar(&gopts.ConfigFile, "config", DefaultConfFile, "Configuration file")
 }
 
 // initConfig reads in config file and ENV variables if set.

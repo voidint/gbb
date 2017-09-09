@@ -16,7 +16,7 @@ var initCmd = &cobra.Command{
 	Short: `Help you to creating "gbb.json" step by step.`,
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
-		genConfigFile(confFile)
+		genConfigFile(gopts.ConfigFile)
 	},
 }
 

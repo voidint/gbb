@@ -8,6 +8,7 @@ import (
 
 	"github.com/lmika/shellwords"
 	"github.com/voidint/gbb/config"
+	"github.com/voidint/gbb/util"
 )
 
 // GBBuilder gb编译工具
@@ -32,7 +33,7 @@ func (b *GBBuilder) Build(rootDir string) (err error) {
 
 // 切换到指定工作目录，调用指定的编译工具进行编译。
 func (b *GBBuilder) buildDir(dir string) error {
-	if err := chdir(dir, b.conf.Debug); err != nil {
+	if err := util.Chdir(dir, b.conf.Debug); err != nil {
 		return err
 	}
 
