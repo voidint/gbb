@@ -13,7 +13,7 @@ import (
 
 var initCmd = &cobra.Command{
 	Use:   "init",
-	Short: `Help you to creating "gbb.json" step by step.`,
+	Short: `Help you to creating "gbb.json" step by step`,
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
 		genConfigFile(gopts.ConfigFile)
