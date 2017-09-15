@@ -87,8 +87,8 @@ var (
 func init() {
 	cobra.OnInitialize(initConfig)
 	RootCmd.PersistentFlags().BoolVarP(&gopts.All, "all", "a", false, "Act on all go packages")
-	RootCmd.PersistentFlags().BoolVar(&gopts.Debug, "debug", false, "Enable debug mode")
-	RootCmd.PersistentFlags().StringVar(&gopts.ConfigFile, "config", DefaultConfFile, "Configuration file")
+	RootCmd.PersistentFlags().BoolVarP(&gopts.Debug, "debug", "D", false, "Enable debug mode")
+	RootCmd.PersistentFlags().StringVarP(&gopts.ConfigFile, "config", "c", DefaultConfFile, "Configuration file")
 }
 
 // initConfig reads in config file and ENV variables if set.
