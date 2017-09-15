@@ -26,6 +26,7 @@ func TestBuild4Go(t *testing.T) {
 					{Value: "wrong express"},
 				},
 				Debug: true,
+				All:   true,
 			})
 			wd, _ := os.Getwd()
 			rootDir := filepath.Clean(strings.TrimSuffix(wd, "tool"))
@@ -40,6 +41,7 @@ func TestBuild4Go(t *testing.T) {
 					{Value: "{{.Date}}"},
 				},
 				Debug: true,
+				All:   true,
 			})
 
 			var ErrChdir = errors.New("chdir error")
@@ -64,6 +66,7 @@ func TestBuild4Go(t *testing.T) {
 				Tool:       "go build -ldflags='-w'",
 				Importpath: "github.com/voidint/gbb/build",
 				Debug:      true,
+				All:        true,
 			})
 			wd, _ := os.Getwd()
 			rootDir := filepath.Clean(strings.TrimSuffix(wd, "tool"))

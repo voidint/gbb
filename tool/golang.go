@@ -29,7 +29,11 @@ func (b *GoBuilder) Build(rootDir string) (err error) {
 		return err
 	}
 
-	paths, err := util.WalkPkgsFunc(rootDir, util.IsGoPkg)
+	walkF := util.IsMainPkg
+	if b.conf.All {
+		walkF = util.IsGoPkg
+	}
+	paths, err := util.WalkPkgsFunc(rootDir, walkF)
 	if err != nil {
 		return err
 	}

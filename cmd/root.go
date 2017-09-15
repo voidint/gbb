@@ -37,6 +37,7 @@ var RootCmd = &cobra.Command{
 			os.Exit(-1)
 		}
 		conf.Debug = gopts.Debug
+		conf.All = gopts.All
 
 		if conf.Version != Version {
 			gt, err := util.VersionGreaterThan(Version, conf.Version)
@@ -73,6 +74,7 @@ func Execute() {
 
 // GlobalOptions global options
 type GlobalOptions struct {
+	All        bool
 	Debug      bool
 	ConfigFile string
 }
@@ -84,6 +86,7 @@ var (
 
 func init() {
 	cobra.OnInitialize(initConfig)
+	RootCmd.PersistentFlags().BoolVarP(&gopts.All, "all", "a", false, "Act on all go packages")
 	RootCmd.PersistentFlags().BoolVar(&gopts.Debug, "debug", false, "Enable debug mode")
 	RootCmd.PersistentFlags().StringVar(&gopts.ConfigFile, "config", DefaultConfFile, "Configuration file")
 }
