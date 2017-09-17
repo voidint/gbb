@@ -35,6 +35,7 @@ var RootCmd = &cobra.Command{
 		if err != nil {
 			fmt.Fprintln(os.Stderr, err.Error())
 			os.Exit(-1)
+			return
 		}
 		conf.Debug = gopts.Debug
 		conf.All = gopts.All
@@ -44,6 +45,7 @@ var RootCmd = &cobra.Command{
 			if err != nil {
 				fmt.Fprintln(os.Stderr, err.Error())
 				os.Exit(-1)
+				return
 			}
 
 			if gt { // 程序版本大于配置文件版本，重新生成配置文件。
@@ -59,6 +61,7 @@ var RootCmd = &cobra.Command{
 		if err := tool.Build(conf, wd); err != nil {
 			fmt.Fprintln(os.Stderr, err.Error())
 			os.Exit(-1)
+			return
 		}
 	},
 }
@@ -69,6 +72,7 @@ func Execute() {
 	if err := RootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(-1)
+		return
 	}
 }
 
@@ -98,5 +102,6 @@ func initConfig() {
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(-1)
+		return
 	}
 }

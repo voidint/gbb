@@ -2,6 +2,6 @@ package cmd
 
 import "testing"
 
-func TestVersion(t *testing.T) {
+func TestVersionCmd(t *testing.T) {
 	versionCmd.Run(nil, nil)
 }

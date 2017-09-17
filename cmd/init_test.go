@@ -10,7 +10,7 @@ import (
 	"github.com/voidint/gbb/util"
 )
 
-func TestGatherOne(t *testing.T) {
+func Test_gatherOne(t *testing.T) {
 	Convey("收集用户终端输入", t, func() {
 		Convey("带默认值，用户输入'go build'", func() {
 			monkey.Patch(util.Scanln, func() (line string, err error) {
@@ -39,7 +39,7 @@ func TestGatherOne(t *testing.T) {
 	})
 }
 
-func TestGatherOneVar(t *testing.T) {
+func Test_gatherOneVar(t *testing.T) {
 	Convey("收集用户输入的变量名及其值", t, func() {
 		var (
 			varName = "Commit"
@@ -66,7 +66,7 @@ func TestGatherOneVar(t *testing.T) {
 	})
 }
 
-func TestGather(t *testing.T) {
+func Test_gather(t *testing.T) {
 	Convey("收集用户的多次输入", t, func() {
 		var (
 			tool       = "go build"
@@ -109,24 +109,51 @@ func TestGather(t *testing.T) {
 	})
 }
 
-func TestGenConfigFile(t *testing.T) {
+func Test_genConfigFile(t *testing.T) {
 	Convey("在指定路径生成配置文件", t, func() {
+		var (
+			tool       = "go build"
+			importpath = "github.com/voidint/gbb/build"
+		)
 		monkey.Patch(gather, func() (c *config.Config) {
 			return &config.Config{
 				Version:    Version,
-				Tool:       "go build",
-				Importpath: "github.com/voidint/gbb/build",
+				Tool:       tool,
+				Importpath: importpath,
 			}
 		})
+		defer monkey.Unpatch(gather)
 
-		monkey.Patch(util.Scanln, func() (line string, err error) {
-			return "y", nil
+		Convey("配置文件持久化", func() {
+			monkey.Patch(util.Scanln, func() (line string, err error) {
+				return "y", nil
+			})
+			defer monkey.Unpatch(util.Scanln)
+
+			filename := "./gbb_test.json"
+			defer os.Remove(filename)
+			So(genConfigFile(filename), ShouldBeNil)
+			So(util.FileExist(filename), ShouldBeTrue)
+			pc, err := config.Load(filename)
+			So(err, ShouldBeNil)
+			So(pc, ShouldNotBeNil)
+			So(pc.All, ShouldBeFalse)
+			So(pc.Debug, ShouldBeFalse)
+			So(pc.Importpath, ShouldEqual, importpath)
+			So(pc.Tool, ShouldEqual, tool)
+			So(pc.Variables, ShouldBeEmpty)
+			So(pc.Version, ShouldEqual, Version)
 		})
-		defer monkey.Unpatch(util.Scanln)
 
-		filename := "./gbb_test.json"
-		So(genConfigFile(filename), ShouldBeNil)
-		os.Remove(filename)
+		Convey("配置文件不持久化", func() {
+			monkey.Patch(util.Scanln, func() (line string, err error) {
+				return "n", nil
+			})
+			defer monkey.Unpatch(util.Scanln)
+			filename := "./gbb_test.json"
+			So(genConfigFile(filename), ShouldBeNil)
+			So(util.FileExist(filename), ShouldBeFalse)
+		})
 	})
 }
 
