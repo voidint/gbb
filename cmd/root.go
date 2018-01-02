@@ -18,9 +18,9 @@ const (
 
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
-	Use:   "gbb",
-	Short: "Compile assistant",
-	Long:  ``,
+	Use: "gbb",
+	Long: `Compile assistant.
+Copyright (c) 2016, 2018, voidint. All rights reserved.`,
 
 	Run: func(cmd *cobra.Command, args []string) {
 		if gopts.ConfigFile == DefaultConfFile {
