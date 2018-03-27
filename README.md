@@ -14,7 +14,7 @@
 	- [step1](#step1)
 	- [step2](#step2)
 - [gbb.json](#gbbjson)
-- [changelog](#changelog)
+- [变更历史](#变更历史)
 	
 ## 应用场景
 ### 场景一
@@ -288,24 +288,26 @@ commit: db8b606cfc2b24a24e2e09acac24a52c47b68401
 			- 以`$(`开头，`)`结尾，中间的字符串内容会被当做命令被执行。如表达式`$(date)`，`date`命令的输出将会作为变量表达式最终的求值结果。
 	
 	
-## changelog
+## 变更历史
 ### 0.6.0 - 
 - Add feature: 添加`clean`子命令。[#26](https://github.com/voidint/gbb/issues/26)
 - Add feature: 添加`--all`全局选项。[#25](https://github.com/voidint/gbb/issues/25)
+- Add feature: 添加`UNIX-style`命令行选项`-D`和`-c`。[#27](https://github.com/voidint/gbb/issues/27)
+- 将版权信息加入到help输出当中。[#30](https://github.com/voidint/gbb/issues/30)
 
 ### 0.5.0 - 2017/09/10
 - Add feature: 支持合并`-ldflags`选项的值。[#23](https://github.com/voidint/gbb/issues/23)
-- Fixbug: gbb.json中的`version`值不满足`xx.xx.xx`格式情况下，提示语的末尾出现意外的`%`。[#20](https://github.com/voidint/gbb/issues/20)
-- Fixbug: 若gbb.json的tool属性值中包含空格，则无法正常编译。[#24](https://github.com/voidint/gbb/issues/24)
-- Fixbug: gbb init无法获取键盘输入的空格内容。[#1](https://github.com/voidint/gbb/issues/1)
+- Fixbug: `gbb.json`中的`version`值不满足`xx.xx.xx`格式情况下，提示语的末尾出现意外的`%`。[#20](https://github.com/voidint/gbb/issues/20)
+- Fixbug: 若`gbb.json`的`tool`属性值中包含空格，则无法正常编译。[#24](https://github.com/voidint/gbb/issues/24)
+- Fixbug: `gbb init`无法获取键盘输入的空格内容。[#1](https://github.com/voidint/gbb/issues/1)
 - 提升单元测试用例覆盖率
 
 ### 0.4.0 - 2017/04/08
-- 支持编译当前目录下所有go package，不再仅限于编译main package。[#10](https://github.com/voidint/gbb/issues/10)
+- 支持编译当前目录下所有`go package`，不再仅限于编译`main package`。[#10](https://github.com/voidint/gbb/issues/10)
 - `gbb.json`中的配置项`package`重命名为`importpath`。[#9](https://github.com/voidint/gbb/issues/9)
 - 新增命令行选项`--config`用于自定义配置文件路径。[#16](https://github.com/voidint/gbb/issues/16)
 - 切换目录并编译后重新切换回源目录。[#17](https://github.com/voidint/gbb/issues/17)
-- 当gbb.json的版本号高于gbb程序版本号时给出程序升级提醒。[#19](https://github.com/voidint/gbb/issues/19)
+- 当`gbb.json`的版本号高于gbb程序版本号时给出程序升级提醒。[#19](https://github.com/voidint/gbb/issues/19)
 
 ### 0.3.0 - 2017/01/09
 - 若开启debug模式`gbb --debug`，那么变量表达式求值过程详情也一并输出。[#12](https://github.com/voidint/gbb/issues/12) [#6](https://github.com/voidint/gbb/issues/6)
