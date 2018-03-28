@@ -19,7 +19,7 @@ const (
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
 	Use: "gbb",
-	Long: `Compile assistant.
+	Long: `Go project compilation assistant.
 Copyright (c) 2016, 2018, voidint. All rights reserved.`,
 
 	Run: func(cmd *cobra.Command, args []string) {
