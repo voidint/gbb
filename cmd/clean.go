@@ -34,10 +34,10 @@ var cleanOpts CleanOptions
 
 func init() {
 	RootCmd.AddCommand(cleanCmd)
-	cleanCmd.Flags().BoolVarP(&cleanOpts.I, "installed", "i", false, `To remove the corresponding installed archive or binary (what 'go install' would create)`)
-	cleanCmd.Flags().BoolVarP(&cleanOpts.N, "not-execute", "n", false, `To print the remove commands it would execute, but not run them`)
-	cleanCmd.Flags().BoolVarP(&cleanOpts.R, "recursive", "r", false, `To be applied recursively to all the dependencies of the packages named by the import paths`)
-	cleanCmd.Flags().BoolVarP(&cleanOpts.X, "execute", "x", false, `To print remove commands as it executes them`)
+	cleanCmd.Flags().BoolVarP(&cleanOpts.I, "installed", "i", false, `remove the corresponding installed archive or binary (what 'go install' would create)`)
+	cleanCmd.Flags().BoolVarP(&cleanOpts.N, "not-execute", "n", false, `print the remove commands it would execute, but not run them`)
+	cleanCmd.Flags().BoolVarP(&cleanOpts.R, "recursive", "r", false, `to be applied recursively to all the dependencies of the packages named by the import paths`)
+	cleanCmd.Flags().BoolVarP(&cleanOpts.X, "execute", "x", false, `print remove commands as it executes them`)
 }
 
 // rclean 在指定目录及其子目录下寻找main package目录并在其中执行go clean
