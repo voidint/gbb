@@ -30,12 +30,12 @@ var builtinVars = []Variabler{
 }
 
 // Eval 逐一用当前内建的变量对表达式求值。
-// 若内建变量无一匹配表达式，则返回ErrExpr。
+// 若内建变量无一匹配表达式，则将表达式原样返回。
 func Eval(expr string, debug bool) (val string, err error) {
 	for i := range builtinVars {
 		if builtinVars[i].Match(expr) {
 			return builtinVars[i].Eval(expr, debug)
 		}
 	}
-	return "", ErrExpr
+	return expr, nil
 }
