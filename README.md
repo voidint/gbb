@@ -83,19 +83,19 @@ commit: db8b606cfc2b24a24e2e09acac24a52c47b68401
 
 ## 安装
 - 源代码安装
-	1. 拉取源代码
+	- 拉取源代码
 
 		``` shell
 		$ go get -u -v github.com/voidint/gbb
 		```
-	1. 编译（默认情况下`go get`就会编译安装）
+	- 编译（默认情况下`go get`就会编译安装）
 
 		```
 		$ cd $GOPATH/src/github.com/voidint/gbb && go install
 		```
-	1. 将可执行文件`gbb`放置到`PATH`环境变量内
-	1. 执行`which gbb`确认是否安装成功
-	1. 若`gbb`重名，那么建议设置别名，比如`alias gbb=gbb2`。
+	- 将可执行文件`gbb`放置到`PATH`环境变量内
+	- 执行`which gbb`确认是否安装成功
+	- 若`gbb`重名，那么建议设置别名，比如`alias gbb=gbb2`。
 
 - 二进制安装
 
