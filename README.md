@@ -82,20 +82,24 @@ commit: db8b606cfc2b24a24e2e09acac24a52c47b68401
 - 首次运行会在项目根目录生成配置文件`gbb.json`，今后编译操作所需的信息都从该文件读取，无需用户干预。
 
 ## 安装
-1. 拉取源代码
+- 源代码安装
+	1. 拉取源代码
 
-	``` shell
-	$ go get -u -v github.com/voidint/gbb
-	```
-1. 编译（默认情况下`go get`就会编译安装）
+		``` shell
+		$ go get -u -v github.com/voidint/gbb
+		```
+	1. 编译（默认情况下`go get`就会编译安装）
 
-	```
-	$ cd $GOPATH/src/github.com/voidint/gbb && go install
-	```
-1. 将可执行文件`gbb`放置到`PATH`环境变量内
-1. 执行`which gbb`确认是否安装成功
-1. 若`gbb`重名，那么建议设置别名，比如`alias gbb=gbb2`。
+		```
+		$ cd $GOPATH/src/github.com/voidint/gbb && go install
+		```
+	1. 将可执行文件`gbb`放置到`PATH`环境变量内
+	1. 执行`which gbb`确认是否安装成功
+	1. 若`gbb`重名，那么建议设置别名，比如`alias gbb=gbb2`。
 
+- 二进制安装
+
+	[Download](https://github.com/voidint/gbb/releases)
 
 ## 基本使用
 `gbb`是自举的，换句话说，使用以上步骤安装的`gbb`可执行二进制文件是可以编译gbb源代码的。类似👇
