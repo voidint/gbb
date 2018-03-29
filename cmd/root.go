@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"time"
 
 	"github.com/spf13/cobra"
 	"github.com/voidint/gbb/config"
@@ -23,6 +24,8 @@ var RootCmd = &cobra.Command{
 Copyright (c) 2016, 2018, voidint. All rights reserved.`,
 
 	Run: func(cmd *cobra.Command, args []string) {
+		begin := time.Now()
+
 		if gopts.ConfigFile == DefaultConfFile {
 			gopts.ConfigFile = filepath.Join(wd, "gbb.json")
 		}
@@ -57,6 +60,10 @@ Copyright (c) 2016, 2018, voidint. All rights reserved.`,
 			}
 			return
 		}
+
+		defer func() {
+			fmt.Printf("Time Used: %.2fs\n", time.Now().Sub(begin).Seconds())
+		}()
 
 		if err := tool.Build(conf, wd); err != nil {
 			fmt.Fprintln(os.Stderr, err.Error())

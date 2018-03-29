@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"time"
 
 	"github.com/spf13/cobra"
 	"github.com/voidint/gbb/util"
@@ -42,7 +43,12 @@ func init() {
 
 // rclean 在指定目录及其子目录下寻找main package目录并在其中执行go clean
 func rclean(rootDir string, opts *CleanOptions, gopts *GlobalOptions) (err error) {
-	defer util.Chdir(rootDir, gopts.Debug)
+	begin := time.Now()
+
+	defer func() {
+		util.Chdir(rootDir, gopts.Debug)
+		fmt.Printf("Time Used: %.2fs\n", time.Now().Sub(begin).Seconds())
+	}()
 
 	mainPaths, err := util.WalkPkgsFunc(rootDir, util.IsMainPkg)
 	if err != nil {
