@@ -13,7 +13,6 @@ import (
 	. "github.com/smartystreets/goconvey/convey"
 	"github.com/voidint/gbb/config"
 	"github.com/voidint/gbb/util"
-	"github.com/voidint/gbb/variable"
 )
 
 func TestBuild4Go(t *testing.T) {
@@ -23,14 +22,14 @@ func TestBuild4Go(t *testing.T) {
 				Tool:       "go build -ldflags='-w'",
 				Importpath: "github.com/voidint/gbb/build",
 				Variables: []config.Variable{
-					{Value: "wrong express"},
+					{Variable: "Hello", Value: "wrong express"},
 				},
 				Debug: true,
 				All:   true,
 			})
 			wd, _ := os.Getwd()
 			rootDir := filepath.Clean(strings.TrimSuffix(wd, "tool"))
-			So(builder.Build(rootDir), ShouldEqual, variable.ErrExpr)
+			So(builder.Build(rootDir), ShouldBeNil)
 		})
 
 		Convey("切换目录出错", func() {

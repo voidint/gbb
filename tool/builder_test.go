@@ -57,7 +57,7 @@ func TestBuild(t *testing.T) {
 					{Variable: "Date", Value: "xxxx"},
 				}
 				err := Build(c, strings.TrimSuffix(wd, "tool"))
-				So(err, ShouldNotBeNil)
+				So(err, ShouldBeNil)
 			})
 
 			Convey("包含合法变量表达式", func() {

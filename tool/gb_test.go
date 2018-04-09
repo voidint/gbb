@@ -13,7 +13,6 @@ import (
 	. "github.com/smartystreets/goconvey/convey"
 	"github.com/voidint/gbb/config"
 	"github.com/voidint/gbb/util"
-	"github.com/voidint/gbb/variable"
 )
 
 func TestBuild4GB(t *testing.T) {
@@ -29,7 +28,7 @@ func TestBuild4GB(t *testing.T) {
 			})
 			wd, _ := os.Getwd()
 			rootDir := filepath.Clean(strings.TrimSuffix(wd, "tool"))
-			So(builder.Build(rootDir), ShouldEqual, variable.ErrExpr)
+			So(builder.Build(rootDir), ShouldBeNil)
 		})
 
 		Convey("切换目录出错", func() {

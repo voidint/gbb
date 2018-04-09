@@ -46,9 +46,10 @@ func TestEval(t *testing.T) {
 		})
 
 		Convey("未匹配到任何变量表达式", func() {
-			val, err := Eval("xxxxx", true)
-			So(err, ShouldEqual, ErrExpr)
-			So(val, ShouldEqual, "")
+			expr := "xxxxx"
+			val, err := Eval(expr, true)
+			So(err, ShouldBeNil)
+			So(val, ShouldEqual, expr)
 		})
 	})
 }
