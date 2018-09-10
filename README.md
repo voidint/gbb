@@ -297,9 +297,10 @@ commit: db8b606cfc2b24a24e2e09acac24a52c47b68401
 - Add feature: 添加`clean`子命令。[#26](https://github.com/voidint/gbb/issues/26)
 - Add feature: 添加`--all`全局选项。[#25](https://github.com/voidint/gbb/issues/25)
 - Add feature: 添加`UNIX-style`命令行选项`-D`和`-c`。[#27](https://github.com/voidint/gbb/issues/27)
+- Add feature: 将版权信息加入到help输出当中。[#30](https://github.com/voidint/gbb/issues/30)
+- Add feature: 编译完成后输出总耗时。[#31](https://github.com/voidint/gbb/issues/31)
 - Modify feature: 对于非内置的表达式求值，将表达式本身原样返回作为求值结果。[#32](https://github.com/voidint/gbb/issues/32)
-- 将版权信息加入到help输出当中。[#30](https://github.com/voidint/gbb/issues/30)
-- 编译完成后输出总耗时。[#31](https://github.com/voidint/gbb/issues/31)
+- Modify feature: *NIX系统下通过shell对命令形式的变量表达式进行求值。[#34https://github.com/voidint/gbb/issues/34]
 
 ### 0.5.0 - 2017/09/10
 - Add feature: 支持合并`-ldflags`选项的值。[#23](https://github.com/voidint/gbb/issues/23)
