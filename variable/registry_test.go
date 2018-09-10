@@ -1,8 +1,11 @@
 package variable
 
 import (
+	"fmt"
+	"os"
 	"os/exec"
 	"reflect"
+	"runtime"
 	"strings"
 	"testing"
 	"time"
@@ -40,9 +43,19 @@ func TestEval(t *testing.T) {
 			})
 			defer monkey.UnpatchInstanceMethod(reflect.TypeOf(cmd), "Output")
 
-			val, err := Eval("$(Date)", true)
-			So(err, ShouldBeNil)
-			So(val, ShouldEqual, "Date")
+			if runtime.GOOS != "windows" {
+				shell := os.Getenv("SHELL")
+				defer os.Setenv("SHELL", shell)
+
+				os.Setenv("SHELL", "/bin/bash")
+				val, err := NewCmdVar().Eval("$(date)", true)
+				So(err, ShouldBeNil)
+				So(val, ShouldEqual, fmt.Sprintf("/bin/bash -c %s", "date"))
+			} else {
+				val, err := NewCmdVar().Eval("$(date)", true)
+				So(err, ShouldBeNil)
+				So(val, ShouldEqual, "date")
+			}
 		})
 
 		Convey("未匹配到任何变量表达式", func() {
