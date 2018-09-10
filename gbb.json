@@ -10,6 +10,10 @@
         {
             "variable": "Commit",
             "value": "{{.GitCommit}}"
+        },
+        {
+            "variable": "Branch",
+            "value": "$(git symbolic-ref --short -q HEAD)"
         }
     ]
 }
