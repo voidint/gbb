@@ -1,6 +1,6 @@
 {
-    "version": "0.5.0",
-    "tool": "go build -ldflags='-s -w' -gcflags='-N -l'",
+    "version": "0.6.0",
+    "tool": "go build -v -ldflags='-s -w' -gcflags='-N -l'",
     "importpath": "github.com/voidint/gbb/build",
     "variables": [
         {
@@ -10,6 +10,10 @@
         {
             "variable": "Commit",
             "value": "{{.GitCommit}}"
+        },
+        {
+            "variable": "Branch",
+            "value": "$(git symbolic-ref --short -q HEAD)"
         }
     ]
 }

@@ -1,13 +1,16 @@
 package util
 
 import (
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 	"time"
 
+	"github.com/bouk/monkey"
 	. "github.com/smartystreets/goconvey/convey"
 )
 
@@ -35,6 +38,36 @@ func TestFileExist(t *testing.T) {
 				os.MkdirAll(filename, 0666)
 				So(FileExist(filename), ShouldBeFalse)
 			})
+		})
+	})
+}
+
+func TestChdir(t *testing.T) {
+	Convey("切换工作目录", t, func() {
+		Convey("目标目录是当前目录", func() {
+			wd, err := os.Getwd()
+			So(err, ShouldBeNil)
+			So(Chdir(wd, true), ShouldBeNil)
+		})
+
+		Convey("目标目录非当前目录", func() {
+			wd, err := os.Getwd()
+			So(err, ShouldBeNil)
+
+			defer Chdir(wd, true) // init work directory
+
+			if idx := strings.LastIndex(wd, fmt.Sprintf("%c", os.PathSeparator)); idx > 0 {
+				So(Chdir(wd[:idx], true), ShouldBeNil)
+			}
+		})
+
+		Convey("目录切换发生错误", func() {
+			var ErrChdir = errors.New("chdir error")
+			monkey.Patch(os.Getwd, func() (dir string, err error) {
+				return "", ErrChdir
+			})
+			defer monkey.Unpatch(os.Getwd)
+			So(Chdir("../", true), ShouldEqual, ErrChdir)
 		})
 	})
 }

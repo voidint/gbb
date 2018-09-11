@@ -2,7 +2,9 @@ package variable
 
 import (
 	"fmt"
+	"os"
 	"os/exec"
+	"runtime"
 	"strings"
 
 	"github.com/lmika/shellwords"
@@ -19,21 +21,31 @@ func NewCmdVar() *CmdVar {
 
 // Eval 表达式变量求值
 func (v *CmdVar) Eval(expr string, debug bool) (val string, err error) {
-	nameAndArgs := strings.TrimRight(strings.TrimLeft(strings.TrimSpace(expr), "$("), ")")
+	nameAndArgs := strings.TrimSuffix(strings.TrimPrefix(strings.TrimSpace(expr), "$("), ")")
 	if nameAndArgs == "" {
 		return "", nil
 	}
-	if debug {
-		fmt.Println("==>", nameAndArgs)
-	}
-	output, err := v.exec(nameAndArgs)
+
+	output, err := v.exec(nameAndArgs, debug)
 	if err != nil {
 		return "", err
 	}
 	return strings.TrimSpace(string(output)), nil
 }
 
-func (v *CmdVar) exec(nameAndArgs string) (output []byte, err error) {
+func (v *CmdVar) exec(nameAndArgs string, debug bool) (output []byte, err error) {
+	if runtime.GOOS != "windows" {
+		if sh := os.Getenv("SHELL"); sh != "" {
+			return v.execByShell(sh, nameAndArgs, debug)
+		}
+	}
+	return v.execByNative(nameAndArgs, debug)
+}
+
+func (v *CmdVar) execByNative(nameAndArgs string, debug bool) (output []byte, err error) {
+	if debug {
+		fmt.Println("==>", nameAndArgs)
+	}
 	fields := shellwords.Split(nameAndArgs)
 	var cmd *exec.Cmd
 	if len(fields) == 1 {
@@ -45,6 +57,13 @@ func (v *CmdVar) exec(nameAndArgs string) (output []byte, err error) {
 	}
 
 	return cmd.Output()
+}
+
+func (v *CmdVar) execByShell(sh, cmds string, debug bool) (output []byte, err error) {
+	if debug {
+		fmt.Println("==>", fmt.Sprintf("%s -c %q", sh, cmds))
+	}
+	return exec.Command(sh, "-c", cmds).Output()
 }
 
 // Match 表达式是否可以使用当前变量求值

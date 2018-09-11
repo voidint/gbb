@@ -56,8 +56,8 @@ func TestBuild(t *testing.T) {
 				c.Variables = []config.Variable{
 					{Variable: "Date", Value: "xxxx"},
 				}
-				err := Build(c, strings.TrimRight(wd, "tool"))
-				So(err, ShouldNotBeNil)
+				err := Build(c, strings.TrimSuffix(wd, "tool"))
+				So(err, ShouldBeNil)
 			})
 
 			Convey("包含合法变量表达式", func() {
@@ -107,36 +107,6 @@ func TestBuild(t *testing.T) {
 
 		err := Build(c, "./")
 		So(err, ShouldEqual, ErrBuildTool)
-	})
-}
-
-func TestChdir(t *testing.T) {
-	Convey("切换工作目录", t, func() {
-		Convey("目标目录是当前目录", func() {
-			wd, err := os.Getwd()
-			So(err, ShouldBeNil)
-			So(chdir(wd, true), ShouldBeNil)
-		})
-
-		Convey("目标目录非当前目录", func() {
-			wd, err := os.Getwd()
-			So(err, ShouldBeNil)
-
-			defer chdir(wd, true) // init work directory
-
-			if idx := strings.LastIndex(wd, fmt.Sprintf("%c", os.PathSeparator)); idx > 0 {
-				So(chdir(wd[:idx], true), ShouldBeNil)
-			}
-		})
-
-		Convey("目录切换发生错误", func() {
-			var ErrChdir = errors.New("chdir error")
-			monkey.Patch(os.Getwd, func() (dir string, err error) {
-				return "", ErrChdir
-			})
-			defer monkey.Unpatch(os.Getwd)
-			So(chdir("../", true), ShouldEqual, ErrChdir)
-		})
 	})
 }
 

@@ -14,7 +14,7 @@
 	- [step1](#step1)
 	- [step2](#step2)
 - [gbb.json](#gbbjson)
-- [changelog](#changelog)
+- [变更历史](#变更历史)
 	
 ## 应用场景
 ### 场景一
@@ -82,20 +82,24 @@ commit: db8b606cfc2b24a24e2e09acac24a52c47b68401
 - 首次运行会在项目根目录生成配置文件`gbb.json`，今后编译操作所需的信息都从该文件读取，无需用户干预。
 
 ## 安装
-1. 拉取源代码
+- 源代码安装
+	- 拉取源代码
 
-	``` shell
-	$ go get -u -v github.com/voidint/gbb
-	```
-1. 编译（默认情况下`go get`就会编译安装）
+		``` shell
+		$ go get -u -v github.com/voidint/gbb
+		```
+	- 编译（默认情况下`go get`就会编译安装）
 
-	```
-	$ cd $GOPATH/src/github.com/voidint/gbb && go install
-	```
-1. 将可执行文件`gbb`放置到`PATH`环境变量内
-1. 执行`which gbb`确认是否安装成功
-1. 若`gbb`重名，那么建议设置别名，比如`alias gbb=gbb2`。
+		```
+		$ cd $GOPATH/src/github.com/voidint/gbb && go install
+		```
+	- 将可执行文件`gbb`放置到`PATH`环境变量内
+	- 执行`which gbb`确认是否安装成功
+	- 若`gbb`重名，那么建议设置别名，比如`alias gbb=gbb2`。
 
+- 二进制安装
+
+	[Download](https://github.com/voidint/gbb/releases)
 
 ## 基本使用
 `gbb`是自举的，换句话说，使用以上步骤安装的`gbb`可执行二进制文件是可以编译gbb源代码的。类似👇
@@ -190,7 +194,7 @@ Do you want to continue?[y/n] n
 About to write to /Users/voidint/cloud/workspace/go/lib/src/github.com/voidint/gbb/gbb.json:
 
 {
-    "version": "0.4.0",
+    "version": "0.5.0",
     "tool": "go build"
 }
 
@@ -217,7 +221,7 @@ Do you want to continue?[y/n] n
 About to write to /Users/voidint/cloud/workspace/go/lib/src/github.com/voidint/gbb/gbb.json:
 
 {
-    "version": "0.4.0",
+    "version": "0.5.0",
     "tool": "go build",
     "importpath": "github.com/voidint/gbb/build",
     "variables": [
@@ -248,7 +252,7 @@ $ gbb --debug
 
 ```
 $ ./gbb version
-gbb version 0.4.0
+gbb version 0.5.0
 date: 2016-12-17T22:18:32+08:00
 commit: db8b606cfc2b24a24e2e09acac24a52c47b68401
 ```
@@ -260,7 +264,7 @@ commit: db8b606cfc2b24a24e2e09acac24a52c47b68401
 ``` json
 {
     "version": "0.5.0",
-    "tool": "go build  -ldflags='-s -w' -gcflags='-N -l'",
+    "tool": "go build -v -ldflags='-s -w' -gcflags='-N -l'",
     "importpath": "github.com/voidint/gbb/build",
     "variables": [
         {
@@ -270,12 +274,16 @@ commit: db8b606cfc2b24a24e2e09acac24a52c47b68401
         {
             "variable": "Commit",
             "value": "{{.GitCommit}}"
+        },
+        {
+            "variable": "Branch",
+            "value": "$(git symbolic-ref --short -q HEAD)"
         }
     ]
 }
 ```
 
-- `version`: 版本号。gbb根据自身版本号自动写入gbb.json。
+- `version`: gbb版本号。gbb根据自身版本号自动写入gbb.json。
 - `tool`: gbb实际所调用的编译工具，支持附带编译工具的编译选项。已支持编译工具包括：`go build`、`go install`、`gb build`。
 - `importpath`: 包导入路径，也就是`Date`、`Commit`这类变量所在包的导入路径，如`github.com/voidint/gbb/build`。
 - `variables`: 变量列表。列表中的每个元素都包含`variable`和`value`两个属性。
@@ -283,25 +291,34 @@ commit: db8b606cfc2b24a24e2e09acac24a52c47b68401
 	- `value`变量表达式
 		- 内置变量表达式
 			- `{{.Date}}`: 输出[RFC3339](http://www.ietf.org/rfc/rfc3339.txt)格式的系统时间。
-			- `{{.GitCommit}}`: 输出当前分支最近一次`git hash`字符串。
+			- `{{.GitCommit}}`: 输出当前分支最近一次`git commit hash`字符串。
 		- 命令形式的变量表达式
-			- 以`$(`开头，`)`结尾，中间的字符串内容会被当做命令被执行。如表达式`$(date)`，`date`命令的输出将会作为变量表达式最终的求值结果。
+			- 以`$(`开头，`)`结尾，中间的字符串内容会被当做命令被执行。如表达式`$(date)`，`date`命令的输出将会作为变量表达式最终的求值结果。在非windows系统下，会调用默认的shell对变量表达式求值，如`/bin/bash -c "git symbolic-ref --short -q HEAD"`。
 	
 	
-## changelog
-### 0.5.0 - 2017/09/03
+## 变更历史
+### 0.6.0 - 2018/09/11
+- Add feature: 添加`clean`子命令。[#26](https://github.com/voidint/gbb/issues/26)
+- Add feature: 添加`--all`全局选项。[#25](https://github.com/voidint/gbb/issues/25)
+- Add feature: 添加`UNIX-style`命令行选项`-D`和`-c`。[#27](https://github.com/voidint/gbb/issues/27)
+- Add feature: 将版权信息加入到help输出当中。[#30](https://github.com/voidint/gbb/issues/30)
+- Add feature: 编译完成后输出总耗时。[#31](https://github.com/voidint/gbb/issues/31)
+- Modify feature: 对于非内置的表达式求值，将表达式本身原样返回作为求值结果。[#32](https://github.com/voidint/gbb/issues/32)
+- Modify feature: *NIX系统下通过shell对命令形式的变量表达式进行求值。[#34](https://github.com/voidint/gbb/issues/34)
+
+### 0.5.0 - 2017/09/10
 - Add feature: 支持合并`-ldflags`选项的值。[#23](https://github.com/voidint/gbb/issues/23)
-- Fixbug: gbb.json中的`version`值不满足`xx.xx.xx`格式情况下，提示语的末尾出现意外的`%`。[#20](https://github.com/voidint/gbb/issues/20)
-- Fixbug: 若gbb.json的tool属性值中包含空格，则无法正常编译。[#24](https://github.com/voidint/gbb/issues/24)
-- Fixbug: gbb init无法获取键盘输入的空格内容。[#1](https://github.com/voidint/gbb/issues/1)
+- Fixbug: `gbb.json`中的`version`值不满足`xx.xx.xx`格式情况下，提示语的末尾出现意外的`%`。[#20](https://github.com/voidint/gbb/issues/20)
+- Fixbug: 若`gbb.json`的`tool`属性值中包含空格，则无法正常编译。[#24](https://github.com/voidint/gbb/issues/24)
+- Fixbug: `gbb init`无法获取键盘输入的空格内容。[#1](https://github.com/voidint/gbb/issues/1)
 - 提升单元测试用例覆盖率
 
 ### 0.4.0 - 2017/04/08
-- 支持编译当前目录下所有go package，不再仅限于编译main package。[#10](https://github.com/voidint/gbb/issues/10)
+- 支持编译当前目录下所有`go package`，不再仅限于编译`main package`。[#10](https://github.com/voidint/gbb/issues/10)
 - `gbb.json`中的配置项`package`重命名为`importpath`。[#9](https://github.com/voidint/gbb/issues/9)
 - 新增命令行选项`--config`用于自定义配置文件路径。[#16](https://github.com/voidint/gbb/issues/16)
 - 切换目录并编译后重新切换回源目录。[#17](https://github.com/voidint/gbb/issues/17)
-- 当gbb.json的版本号高于gbb程序版本号时给出程序升级提醒。[#19](https://github.com/voidint/gbb/issues/19)
+- 当`gbb.json`的版本号高于gbb程序版本号时给出程序升级提醒。[#19](https://github.com/voidint/gbb/issues/19)
 
 ### 0.3.0 - 2017/01/09
 - 若开启debug模式`gbb --debug`，那么变量表达式求值过程详情也一并输出。[#12](https://github.com/voidint/gbb/issues/12) [#6](https://github.com/voidint/gbb/issues/6)

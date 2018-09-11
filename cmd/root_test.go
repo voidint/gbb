@@ -14,7 +14,7 @@ import (
 	"github.com/voidint/gbb/util"
 )
 
-func TestInitConfig(t *testing.T) {
+func Test_initConfig(t *testing.T) {
 	Convey("全局变量初始化", t, func() {
 		monkey.Patch(os.Getwd, func() (dir string, err error) {
 			return "/a/b/c", nil
@@ -65,6 +65,38 @@ func TestRootCmd(t *testing.T) {
 		})
 
 		Convey("gbb.json已存在", func() {
+			Convey("解析gbb.json文件出错", func() {
+				monkey.Patch(util.FileExist, func(filename string) bool {
+					return true
+				})
+				defer monkey.UnpatchAll()
+
+				monkey.Patch(config.Load, func(_ string) (*config.Config, error) {
+					return nil, errors.New("paser error")
+				})
+				monkey.Patch(os.Exit, func(code int) {
+				})
+
+				RootCmd.Run(nil, nil)
+			})
+
+			Convey("版本号比较出错", func() {
+				monkey.Patch(util.FileExist, func(filename string) bool {
+					return true
+				})
+				defer monkey.UnpatchAll()
+				monkey.Patch(util.VersionGreaterThan, func(_, _ string) (bool, error) {
+					return false, errors.New("version error")
+				})
+				monkey.Patch(config.Load, func(_ string) (conf *config.Config, err error) {
+					return &config.Config{
+						Version: "0.0.1",
+					}, nil
+				})
+				monkey.Patch(os.Exit, func(code int) {
+				})
+				RootCmd.Run(nil, nil)
+			})
 			Convey("gbb.json版本号高于gbb程序版本号", func() {
 				monkey.Patch(util.FileExist, func(filename string) bool {
 					return true

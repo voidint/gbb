@@ -4,7 +4,7 @@
 *.so
 *.db
 *.log
-gbb.json
+gbb
 
 # Folders
 _obj

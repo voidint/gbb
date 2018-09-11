@@ -4,11 +4,11 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"os"
 	"strings"
 
 	"github.com/lmika/shellwords"
 	"github.com/voidint/gbb/config"
+	"github.com/voidint/gbb/util"
 	"github.com/voidint/gbb/variable"
 )
 
@@ -30,7 +30,7 @@ var (
 // Build 根据配置信息，调用合适的编译工具进行编译。
 // 若配置的编译工具不在支持的工具范围内，则返回ErrBuildTool错误。
 func Build(conf *config.Config, dir string) (err error) {
-	defer chdir(dir, conf.Debug) // init work directory
+	defer util.Chdir(dir, conf.Debug) // init work directory
 
 	if strings.HasPrefix(conf.Tool, "go ") {
 		return NewGoBuilder(*conf).Build(dir)
@@ -38,21 +38,6 @@ func Build(conf *config.Config, dir string) (err error) {
 		return NewGBBuilder(*conf).Build(dir)
 	}
 	return ErrBuildTool
-}
-
-func chdir(dir string, debug bool) (err error) {
-	wd, err := os.Getwd()
-	if err != nil {
-		return err
-	}
-	if wd == dir {
-		return nil
-	}
-
-	if debug {
-		fmt.Printf("==> cd %s\n", dir)
-	}
-	return os.Chdir(dir)
 }
 
 func setupConfig(conf *config.Config) (err error) {

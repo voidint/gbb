@@ -5,6 +5,8 @@ import "bytes"
 var (
 	// Date 编译时间
 	Date string
+	// Branch 分支名
+	Branch string
 	// Commit git提交ID
 	Commit string
 )
@@ -19,6 +21,11 @@ func Version(prefix string) string {
 		buf.WriteByte('\n')
 		buf.WriteString("date: ")
 		buf.WriteString(Date)
+	}
+	if Branch != "" {
+		buf.WriteByte('\n')
+		buf.WriteString("branch: ")
+		buf.WriteString(Branch)
 	}
 	if Commit != "" {
 		buf.WriteByte('\n')

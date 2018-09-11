@@ -2,16 +2,13 @@ package tool
 
 import (
 	"fmt"
-	"go/parser"
-	"go/token"
 	"os"
 	"os/exec"
-	"path/filepath"
-	"runtime"
 	"strings"
 
 	"github.com/lmika/shellwords"
 	"github.com/voidint/gbb/config"
+	"github.com/voidint/gbb/util"
 )
 
 // GoBuilder go内置编译工具
@@ -32,7 +29,11 @@ func (b *GoBuilder) Build(rootDir string) (err error) {
 		return err
 	}
 
-	paths, err := walkPkgs(rootDir)
+	walkF := util.IsMainPkg
+	if b.conf.All {
+		walkF = util.IsGoPkg
+	}
+	paths, err := util.WalkPkgsFunc(rootDir, walkF)
 	if err != nil {
 		return err
 	}
@@ -46,7 +47,7 @@ func (b *GoBuilder) Build(rootDir string) (err error) {
 
 // 切换到指定工作目录，调用指定的编译工具进行编译。
 func (b *GoBuilder) buildDir(dir string) error {
-	if err := chdir(dir, b.conf.Debug); err != nil {
+	if err := util.Chdir(dir, b.conf.Debug); err != nil {
 		return err
 	}
 
@@ -68,43 +69,4 @@ func (b *GoBuilder) buildDir(dir string) error {
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	return cmd.Run()
-}
-
-func walkPkgs(rootDir string) (paths []string, err error) {
-	return paths, filepath.Walk(rootDir, func(path string, info os.FileInfo, e error) error {
-		if e != nil {
-			return e
-		}
-
-		if !info.IsDir() {
-			return nil
-		}
-
-		if info.Name() == "vendor" ||
-			(runtime.GOOS != "windows" && strings.HasPrefix(info.Name(), ".")) {
-			return filepath.SkipDir
-		}
-
-		yes, err := isGoPkg(path)
-		if err != nil {
-			return err
-		}
-		if yes {
-			paths = append(paths, path)
-		}
-		return nil
-	})
-}
-
-// isGoPkg 判断路径是否是golang的包
-func isGoPkg(path string) (yes bool, err error) {
-	if path == "" {
-		return false, nil
-	}
-	fset := token.NewFileSet()
-	pkgs, err := parser.ParseDir(fset, path, nil, 0)
-	if err != nil {
-		return false, err
-	}
-	return len(pkgs) > 0, nil
 }

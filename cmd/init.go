@@ -13,10 +13,10 @@ import (
 
 var initCmd = &cobra.Command{
 	Use:   "init",
-	Short: `Help you to creating "gbb.json" step by step.`,
+	Short: `Help you to creating "gbb.json" step by step`,
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
-		genConfigFile(confFile)
+		genConfigFile(gopts.ConfigFile)
 	},
 }
 
@@ -30,9 +30,7 @@ func genConfigFile(destFilename string) (err error) {
 	fmt.Printf("About to write to %s:\n\n", destFilename)
 	enc := json.NewEncoder(os.Stdout)
 	enc.SetIndent("", "    ")
-	if err = enc.Encode(c); err != nil {
-		return err
-	}
+	enc.Encode(c)
 	fmt.Printf("\nIs this ok?[y/n] ")
 
 	if ok, _ := util.Scanln(); strings.ToLower(ok) == "y" {
