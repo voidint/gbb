@@ -264,7 +264,7 @@ commit: db8b606cfc2b24a24e2e09acac24a52c47b68401
 ``` json
 {
     "version": "0.5.0",
-    "tool": "go build  -ldflags='-s -w' -gcflags='-N -l'",
+    "tool": "go build -v -ldflags='-s -w' -gcflags='-N -l'",
     "importpath": "github.com/voidint/gbb/build",
     "variables": [
         {
@@ -274,12 +274,16 @@ commit: db8b606cfc2b24a24e2e09acac24a52c47b68401
         {
             "variable": "Commit",
             "value": "{{.GitCommit}}"
+        },
+        {
+            "variable": "Branch",
+            "value": "$(git symbolic-ref --short -q HEAD)"
         }
     ]
 }
 ```
 
-- `version`: 版本号。gbb根据自身版本号自动写入gbb.json。
+- `version`: gbb版本号。gbb根据自身版本号自动写入gbb.json。
 - `tool`: gbb实际所调用的编译工具，支持附带编译工具的编译选项。已支持编译工具包括：`go build`、`go install`、`gb build`。
 - `importpath`: 包导入路径，也就是`Date`、`Commit`这类变量所在包的导入路径，如`github.com/voidint/gbb/build`。
 - `variables`: 变量列表。列表中的每个元素都包含`variable`和`value`两个属性。
@@ -287,13 +291,13 @@ commit: db8b606cfc2b24a24e2e09acac24a52c47b68401
 	- `value`变量表达式
 		- 内置变量表达式
 			- `{{.Date}}`: 输出[RFC3339](http://www.ietf.org/rfc/rfc3339.txt)格式的系统时间。
-			- `{{.GitCommit}}`: 输出当前分支最近一次`git hash`字符串。
+			- `{{.GitCommit}}`: 输出当前分支最近一次`git commit hash`字符串。
 		- 命令形式的变量表达式
-			- 以`$(`开头，`)`结尾，中间的字符串内容会被当做命令被执行。如表达式`$(date)`，`date`命令的输出将会作为变量表达式最终的求值结果。
+			- 以`$(`开头，`)`结尾，中间的字符串内容会被当做命令被执行。如表达式`$(date)`，`date`命令的输出将会作为变量表达式最终的求值结果。在非windows系统下，会调用默认的shell对变量表达式求值，如`/bin/bash -c "git symbolic-ref --short -q HEAD"`。
 	
 	
 ## 变更历史
-### 0.6.0 - 
+### 0.6.0 - 2018/09/11
 - Add feature: 添加`clean`子命令。[#26](https://github.com/voidint/gbb/issues/26)
 - Add feature: 添加`--all`全局选项。[#25](https://github.com/voidint/gbb/issues/25)
 - Add feature: 添加`UNIX-style`命令行选项`-D`和`-c`。[#27](https://github.com/voidint/gbb/issues/27)
