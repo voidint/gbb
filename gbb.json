@@ -1,5 +1,5 @@
 {
-    "version": "0.5.0",
+    "version": "0.6.0",
     "tool": "go build -v -ldflags='-s -w' -gcflags='-N -l'",
     "importpath": "github.com/voidint/gbb/build",
     "variables": [
