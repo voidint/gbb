@@ -1,4 +1,4 @@
-FROM golang:1.8.3-alpine3.6
+FROM golang:1.10-alpine3.7
 
 LABEL Author=voidint
 LABEL Email=voidint@126.com
@@ -7,8 +7,8 @@ ENV GOROOT=/usr/local/go
 ENV GOPATH=/go
 ENV PATH=$GOPATH/bin:/usr/local/go/bin:$PATH
 
-RUN echo "http://mirrors.aliyun.com/alpine/v3.6/main" > /etc/apk/repositories \
-    && echo "http://mirrors.aliyun.com/alpine/v3.6/community" >> /etc/apk/repositories \
+RUN echo "http://mirrors.aliyun.com/alpine/v3.7/main" > /etc/apk/repositories \
+    && echo "http://mirrors.aliyun.com/alpine/v3.7/community" >> /etc/apk/repositories \
     && apk update \
     && apk --no-cache add ca-certificates openssl git \
     && go get -u -v github.com/voidint/gbb \
