@@ -54,8 +54,8 @@ func Test_rclean(t *testing.T) {
 	Convey("在指定目录及其子目录下寻找main package目录并在其中执行go clean", t, func() {
 		Convey("遍历目录出错", func() {
 			var ErrWalk = errors.New("walk error")
-			monkey.Patch(util.WalkPkgsFunc, func(rootDir string, f util.FiltePkgFunc) (paths []string, err error) {
-				return nil, ErrWalk
+			monkey.Patch(util.WalkPkgsFunc, func(rootDir string, f util.FiltePkgFunc) (paths, symlinks []string, err error) {
+				return nil, nil, ErrWalk
 			})
 			defer monkey.Unpatch(util.WalkPkgsFunc)
 			beforeDir, _ := os.Getwd()

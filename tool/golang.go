@@ -25,20 +25,22 @@ func NewGoBuilder(conf config.Config) *GoBuilder {
 
 // Build 切换到指定工作目录后调用编译工具编译。
 func (b *GoBuilder) Build(rootDir string) (err error) {
-	if err = setupConfig(b.conf); err != nil {
-		return err
-	}
-
 	walkF := util.IsMainPkg
 	if b.conf.All {
 		walkF = util.IsGoPkg
 	}
-	paths, err := util.WalkPkgsFunc(rootDir, walkF)
+	paths, symlinks, err := util.WalkPkgsFunc(rootDir, walkF)
 	if err != nil {
 		return err
 	}
 	for i := range paths {
 		if err = b.buildDir(paths[i]); err != nil {
+			return err
+		}
+	}
+
+	for i := range symlinks {
+		if err = b.Build(symlinks[i]); err != nil {
 			return err
 		}
 	}

@@ -16,13 +16,13 @@ func TestWalkPkgsFunc(t *testing.T) {
 		So(err, ShouldBeNil)
 		So(strings.HasSuffix(wd, "util"), ShouldBeTrue)
 
-		paths, err := WalkPkgsFunc(wd, IsGoPkg)
+		paths, _, err := WalkPkgsFunc(wd, IsGoPkg)
 		So(err, ShouldBeNil)
 		So(paths, ShouldNotBeEmpty)
 		So(len(paths), ShouldEqual, 1)
 		So(paths[0], ShouldEqual, wd)
 
-		paths, err = WalkPkgsFunc(strings.TrimSuffix(wd, "util"), IsGoPkg)
+		paths, _, err = WalkPkgsFunc(strings.TrimSuffix(wd, "util"), IsGoPkg)
 		So(err, ShouldBeNil)
 		So(paths, ShouldNotBeEmpty)
 		So(len(paths), ShouldEqual, 7)
@@ -36,7 +36,7 @@ func TestWalkPkgsFunc(t *testing.T) {
 
 		Convey("检查指定路径是否是golang包路径报错", func() {
 			var ErrIsGoPkg = errors.New("error for test")
-			paths, err := WalkPkgsFunc(wd, func(_ string) (bool, error) {
+			paths, _, err := WalkPkgsFunc(wd, func(_ string) (bool, error) {
 				return false, ErrIsGoPkg
 			})
 			So(err, ShouldNotBeNil)

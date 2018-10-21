@@ -25,9 +25,6 @@ func NewGBBuilder(conf config.Config) *GBBuilder {
 
 // Build 切换到指定工作目录后调用编译工具编译。
 func (b *GBBuilder) Build(rootDir string) (err error) {
-	if err = setupConfig(b.conf); err != nil {
-		return err
-	}
 	return b.buildDir(rootDir)
 }
 

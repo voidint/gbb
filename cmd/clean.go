@@ -50,7 +50,7 @@ func rclean(rootDir string, opts *CleanOptions, gopts *GlobalOptions) (err error
 		fmt.Printf("Time Used: %.2fs\n", time.Now().Sub(begin).Seconds())
 	}()
 
-	mainPaths, err := util.WalkPkgsFunc(rootDir, util.IsMainPkg)
+	mainPaths, _, err := util.WalkPkgsFunc(rootDir, util.IsMainPkg)
 	if err != nil {
 		return err
 	}

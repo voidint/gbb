@@ -32,6 +32,9 @@ var (
 func Build(conf *config.Config, dir string) (err error) {
 	defer util.Chdir(dir, conf.Debug) // init work directory
 
+	if err = setupConfig(conf); err != nil {
+		return err
+	}
 	if strings.HasPrefix(conf.Tool, "go ") {
 		return NewGoBuilder(*conf).Build(dir)
 	} else if strings.HasPrefix(conf.Tool, "gb ") {

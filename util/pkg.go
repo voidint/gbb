@@ -10,13 +10,27 @@ import (
 )
 
 // WalkPkgsFunc 返回指定目录下满足过滤条件的go package路径列表
-func WalkPkgsFunc(rootDir string, f FiltePkgFunc) (paths []string, err error) {
-	return paths, filepath.Walk(rootDir, func(path string, info os.FileInfo, e error) error {
+func WalkPkgsFunc(rootDir string, f FiltePkgFunc) (paths, symlinks []string, err error) {
+	return paths, symlinks, filepath.Walk(rootDir, func(path string, info os.FileInfo, e error) error {
 		if e != nil {
 			return e
 		}
 
 		if !info.IsDir() {
+			if info.Mode()&os.ModeSymlink != 0 {
+				path, err = filepath.EvalSymlinks(path)
+				if err != nil {
+					return err
+				}
+				info, err = os.Lstat(path)
+				if err != nil {
+					return err
+				}
+				if !info.IsDir() {
+					return nil
+				}
+				symlinks = append(symlinks, path)
+			}
 			return nil
 		}
 

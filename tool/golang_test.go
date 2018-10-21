@@ -18,7 +18,7 @@ import (
 func TestBuild4Go(t *testing.T) {
 	Convey("调用go build编译", t, func() {
 		Convey("变量求值出错", func() {
-			builder := NewGoBuilder(config.Config{
+			conf := config.Config{
 				Tool:       "go build -ldflags='-w'",
 				Importpath: "github.com/voidint/gbb/build",
 				Variables: []config.Variable{
@@ -26,14 +26,16 @@ func TestBuild4Go(t *testing.T) {
 				},
 				Debug: true,
 				All:   true,
-			})
+			}
+			setupConfig(&conf)
+			builder := NewGoBuilder(conf)
 			wd, _ := os.Getwd()
 			rootDir := filepath.Clean(strings.TrimSuffix(wd, "tool"))
 			So(builder.Build(rootDir), ShouldBeNil)
 		})
 
 		Convey("切换目录出错", func() {
-			builder := NewGoBuilder(config.Config{
+			conf := config.Config{
 				Tool:       "go build -ldflags='-w'",
 				Importpath: "github.com/voidint/gbb/build",
 				Variables: []config.Variable{
@@ -41,7 +43,9 @@ func TestBuild4Go(t *testing.T) {
 				},
 				Debug: true,
 				All:   true,
-			})
+			}
+			setupConfig(&conf)
+			builder := NewGoBuilder(conf)
 
 			var ErrChdir = errors.New("chdir error")
 			monkey.Patch(util.Chdir, func(dir string, debug bool) (err error) {
@@ -56,17 +60,19 @@ func TestBuild4Go(t *testing.T) {
 
 		Convey("遍历所有go package出错", func() {
 			var ErrWalk = errors.New("walk error")
-			monkey.Patch(util.WalkPkgsFunc, func(rootDir string, f util.FiltePkgFunc) (paths []string, err error) {
-				return nil, ErrWalk
+			monkey.Patch(util.WalkPkgsFunc, func(rootDir string, f util.FiltePkgFunc) (paths, symlinks []string, err error) {
+				return nil, nil, ErrWalk
 			})
 			defer monkey.Unpatch(util.WalkPkgsFunc)
 
-			builder := NewGoBuilder(config.Config{
+			conf := config.Config{
 				Tool:       "go build -ldflags='-w'",
 				Importpath: "github.com/voidint/gbb/build",
 				Debug:      true,
 				All:        true,
-			})
+			}
+			setupConfig(&conf)
+			builder := NewGoBuilder(conf)
 			wd, _ := os.Getwd()
 			rootDir := filepath.Clean(strings.TrimSuffix(wd, "tool"))
 			So(builder.Build(rootDir), ShouldEqual, ErrWalk)
@@ -79,14 +85,16 @@ func TestBuild4Go(t *testing.T) {
 			})
 			defer monkey.UnpatchAll()
 
-			builder := NewGoBuilder(config.Config{
+			conf := config.Config{
 				Tool:       "go build -ldflags='-w'",
 				Importpath: "github.com/voidint/gbb/build",
 				Variables: []config.Variable{
 					{Value: "{{.Date}}"},
 				},
 				Debug: true,
-			})
+			}
+			setupConfig(&conf)
+			builder := NewGoBuilder(conf)
 
 			wd, _ := os.Getwd()
 			rootDir := filepath.Clean(strings.TrimSuffix(wd, "tool"))
