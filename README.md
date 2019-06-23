@@ -1,6 +1,9 @@
 # gbb
-[![Build Status](https://travis-ci.org/voidint/gbb.png)](https://travis-ci.org/voidint/gbb)
-[![Coverage Status](https://coveralls.io/repos/github/voidint/gbb/badge.svg)](https://coveralls.io/github/voidint/gbb)
+[![Build Status](https://travis-ci.org/voidint/gbb.svg?branch=master)](https://travis-ci.org/voidint/gbb)
+[![GoDoc](https://godoc.org/github.com/voidint/gbb?status.svg)](https://godoc.org/github.com/voidint/gbb)
+[![codecov](https://codecov.io/gh/voidint/gbb/branch/master/graph/badge.svg)](https://codecov.io/gh/voidint/gbb)
+[![codebeat badge](https://codebeat.co/badges/8b9e88ca-59ed-4361-b57e-e8f94bf484a6)](https://codebeat.co/projects/github-com-voidint-gbb-master)
+[![Go Report Card](https://goreportcard.com/badge/github.com/voidint/gbb)](https://goreportcard.com/report/github.com/voidint/gbb)
 
 ## 目录
 - [应用场景](#应用场景)
