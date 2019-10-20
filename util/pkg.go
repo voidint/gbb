@@ -20,9 +20,9 @@ func WalkPkgsFunc(rootDir string, f FiltePkgFunc) (paths []string, err error) {
 			return nil
 		}
 
-		// skip 'vendor' directory and hidden directories
-		if info.Name() == "vendor" ||
-			(runtime.GOOS != "windows" && strings.HasPrefix(info.Name(), ".")) {
+		if dname := info.Name(); dname == "vendor" || // skip 'vendor' directory
+			(dname == "mod" && strings.HasSuffix(path, filepath.Join("pkg", "mod"))) || // skip '$GOPATH/pkg/mod' directory
+			(runtime.GOOS != "windows" && strings.HasPrefix(dname, ".")) { // skip hidden directories
 			return filepath.SkipDir
 		}
 
