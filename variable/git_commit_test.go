@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/bouk/monkey"
+	"bou.ke/monkey"
 	"github.com/lmika/shellwords"
 	. "github.com/smartystreets/goconvey/convey"
 )

@@ -1,7 +1,7 @@
 module github.com/voidint/gbb
 
 require (
-	bou.ke/monkey v1.0.1 // indirect
+	bou.ke/monkey v1.0.1
 	github.com/bouk/monkey v1.0.1
 	github.com/gopherjs/gopherjs v0.0.0-20190430165422-3e4dfb77656c // indirect
 	github.com/lmika/shellwords v0.0.0-20140714114018-ce258dd729fe

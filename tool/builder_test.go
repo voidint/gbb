@@ -11,7 +11,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/bouk/monkey"
+	"bou.ke/monkey"
 	. "github.com/smartystreets/goconvey/convey"
 	"github.com/voidint/gbb/config"
 	"github.com/voidint/gbb/variable"

@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/bouk/monkey"
+	"bou.ke/monkey"
 	. "github.com/smartystreets/goconvey/convey"
 )
 
