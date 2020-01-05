@@ -21,7 +21,7 @@ const (
 var RootCmd = &cobra.Command{
 	Use: "gbb",
 	Long: `Go project compilation assistant.
-Copyright (c) 2016, 2019, voidint. All rights reserved.`,
+Copyright (c) 2016-2020, voidint. All rights reserved.`,
 
 	Run: func(cmd *cobra.Command, args []string) {
 		begin := time.Now()
