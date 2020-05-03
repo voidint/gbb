@@ -197,7 +197,7 @@ Do you want to continue?[y/n] n
 About to write to /Users/voidint/cloud/workspace/go/lib/src/github.com/voidint/gbb/gbb.json:
 
 {
-    "version": "0.5.0",
+    "version": "0.6.1",
     "tool": "go build"
 }
 
@@ -224,7 +224,7 @@ Do you want to continue?[y/n] n
 About to write to /Users/voidint/cloud/workspace/go/lib/src/github.com/voidint/gbb/gbb.json:
 
 {
-    "version": "0.5.0",
+    "version": "0.6.1",
     "tool": "go build",
     "importpath": "github.com/voidint/gbb/build",
     "variables": [
@@ -249,15 +249,15 @@ Is this ok?[y/n] y
 
 ```
 $ gbb --debug
-==> go build -ldflags  '-X "github.com/voidint/gbb/build.Date=2016-12-17T22:18:32+08:00" -X "github.com/voidint/gbb/build.Commit=db8b606cfc2b24a24e2e09acac24a52c47b68401"'
+==> go build -ldflags  '-X "github.com/voidint/gbb/build.Date=2020-05-03T16:11:47+08:00" -X "github.com/voidint/gbb/build.Commit=471876228386f1f4374fc39e675a54be4b7a3715"'
 ```
 编译完后在目录下（由于`gbb.json`中的`tool`配置的是`go build`，若换成`go install`，那可执行文件将被放置在`GOPATH`的`bin`目录下）多出一个编译后的二进制文件。试着输出版本信息，看看是否实现我们设定的目标了。
 
 ```
 $ ./gbb version
-gbb version 0.5.0
-date: 2016-12-17T22:18:32+08:00
-commit: db8b606cfc2b24a24e2e09acac24a52c47b68401
+gbb version 0.6.1
+date: 2020-05-03T16:11:47+08:00
+commit: 471876228386f1f4374fc39e675a54be4b7a3715
 ```
 😊
 
@@ -266,7 +266,7 @@ commit: db8b606cfc2b24a24e2e09acac24a52c47b68401
 
 ``` json
 {
-    "version": "0.5.0",
+    "version": "0.6.1",
     "tool": "go build -v -ldflags='-s -w' -gcflags='-N -l'",
     "importpath": "github.com/voidint/gbb/build",
     "variables": [
@@ -300,6 +300,9 @@ commit: db8b606cfc2b24a24e2e09acac24a52c47b68401
 	
 	
 ## 变更历史
+### 0.6.1 - 2020/01/05
+- 修订copyright
+
 ### 0.6.0 - 2018/09/11
 - Add feature: 添加`clean`子命令。[#26](https://github.com/voidint/gbb/issues/26)
 - Add feature: 添加`--all`全局选项。[#25](https://github.com/voidint/gbb/issues/25)
